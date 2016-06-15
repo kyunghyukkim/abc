@@ -1,4 +1,6 @@
-#this is a test file.
-# another test.
+# Approximate Bayesian Coputation
 
-# another test.
+# model definition
+
+# stochastic simulation
+
