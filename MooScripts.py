@@ -34,14 +34,24 @@ def weightt(t, N, wgtp, pThet, pThetp, pTurb, piTurb):
 # it is defined online, but could be changed if needed. It takes the total number
 # of particles, a standard deviation and the current and previous parameter distributions
 # (theta).
-def Kpert(N, sigj, pThet, pThetp):
+def Kpert(t, N, sigj, pThet, pThetp):
     product = 1
     for j in range(N):
         bit = numpy.exp(-((pThet[j] - pThetp[j])**2)/((2*sigj)**2))/numpy.sqrt(2*3.14159*sigj)
         product = product * bit
     return product
 
-# sigmaj produces the standard deviation for the Kpert function from the various statistical
-# properties of the system.
-def sigmaj(var):
-    return var
+# sigmaj produces the deviation for the Kpert function from the various statistical
+# properties of the system. It takes past distributions and the index you are currently
+# on to get the new sigmaj.
+def sigmaj(t, index, N, pThetp, wgtp, pThetilde, wgtilde):
+    if t == 0:
+        return 2 * numpy.var(pThetp[index])
+    else:
+        sigmabuild = 0
+        for i in range(N):
+            byte = 0
+            for k in range(N):
+                bit = numpy.sqrt(wgtp[i]*wgtilde[k]*(pThetilde[k] - pThetp[i])**2)
+                byte = byte + bit
+            sigmabuild = sigmabuild + byte
