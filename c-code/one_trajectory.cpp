@@ -16,6 +16,11 @@
 //using namespace std;
 #define MAX(c1,c2) ((c1>c2)? c1:c2)
 
+
+extern "C" {
+	const char* gillespie(char*);
+}
+
 long  *S, *INIT_S;
 double  *C;
 
@@ -47,17 +52,16 @@ int NENSEMBLE;
 
 long INDEX_GRID;
 long *SMAX;
+std::stringstream STR_OUTPUT;
 
-void model_def(void);
+void model_def(char *);
 void init_state(void);
-bool MC_not_finished(int);
-void time_ave(void);
 void time_evol(void);
-void MC_results(void);
 void resize_s_counter(int index_species, int new_copy_numb_of_moleculesi);
 void propensity(void);
 int determine_reaction(double *sv, double rand);
 void create_output_files(void);
+bool  MC_not_finished(int time_evolution);
 
 std::ofstream FILE_TEVOL;
 std::ofstream FILE_FLUX;
@@ -67,54 +71,27 @@ std::ofstream FILE_FLUX;
 
 
 
-
-
-int main(void)
+const char* gillespie(char *str)
 {
 	long nextseed=0;
-	model_def();
-	create_output_files();
+		
+	model_def(str);
+//	create_output_files();
 	
 	time_evol();
-	time_ave();
-	MC_results();
 	
+	const std::string& tmp = STR_OUTPUT.str();
+	const char* cstr = tmp.c_str();
+	return cstr;
+//	time_ave();
 }
 
-void create_output_files(void)
-{
-	FILE *temp;
-	std::ofstream myfile;
-
-
-	char filename[20];
-	std::string mystr;
-
-	for(int i=1;i<=NUM_SPEC;i++){
-		std::ostringstream oss;
-		oss<<"s"<<i;
-		mystr= oss.str();
-		strcpy(filename, mystr.c_str());
-		myfile.open(filename);
-		myfile<<"#S\t Probability of S"<<i<<"\n";
-		myfile.close();
-	}
-
-	myfile.open("ave-std");
-	myfile<<"#S[i]\t ave \t std\n";
-	myfile.close();
-
-	myfile.open("tevol");
-	myfile<<"#Time\t";
-	for(int i=1;i<=NUM_SPEC;i++)
-		myfile<<"S["<<i<<"]\t";
-	myfile<<std::endl;
-	myfile.close();
-}
 	
-void model_def(void)
+void model_def(char *str_c)
 {
 	int i,j ;
+	
+	std::stringstream str(str_c);
 
 	NUM_SPEC=3;
 	NUM_SPEC2=NUM_SPEC*NUM_SPEC;
@@ -142,20 +119,25 @@ void model_def(void)
 	counterS=(long **)calloc(NUM_SPEC+1, sizeof(long *));
 	counterv=(double *)calloc(NUM_REACT+1, sizeof(double));
 	SMAX=(long *)calloc(NUM_SPEC+1, sizeof(long));
-	FILE *fp;
+
+
 	int d1[10];
-	fp=fopen("info","r");
 	for(i=1;i<=NUM_SPEC;i++) {
-		fscanf(fp, "%s %d", d1, &INIT_S[i]);
+		str >> INIT_S[i];
+		std::cout << INIT_S[i] << std::endl;
 	}
 
-	for(i=1;i<=NUM_PARAM;i++) fscanf(fp, "%s %lf", d1, &C[i]);
+	for(i=1;i<=NUM_PARAM;i++) {
+		str >> C[i];
+		std::cout << C[i] << std::endl;
+	}
 
-	fscanf(fp, "%s %lf", d1, &GRID_CONST);
-	fscanf(fp, "%s %ld", d1, &NGRID_BF_STEADY);
-	fscanf(fp, "%s %ld", d1, &NGRID_AT_STEADY);
-
-	fclose(fp);
+	str >> GRID_CONST >> NGRID_BF_STEADY >> NGRID_AT_STEADY;
+	std::cout << GRID_CONST << " " << NGRID_BF_STEADY<< " " << NGRID_AT_STEADY << std::endl;
+	std::cout <<  "NGRID_AT_STEADY = " <<NGRID_AT_STEADY << std::endl;
+	// output string memory allocation
+	// time and S1 with NGRID_BF_STEADY items. 
+	
 	for(i=1;i<=NUM_SPEC;i++){
 		SMAX[i]=INIT_S[i];
 		counterS[i]=(long *) calloc( SMAX[i]+1, sizeof(long));
@@ -196,7 +178,6 @@ void propensity(void)
 
 
 
-
 void time_evol(void)
 {
 	int i;
@@ -205,114 +186,9 @@ void time_evol(void)
 	init_state();
 		
 
-	FILE_TEVOL.open("tevol", std::ios::out);
-	FILE_FLUX.open("v_t", std::ios::out);
-	
-	
 	for(i=1;i<=NUM_REACT;i++) counterv[i]=0;
 	while(INDEX_GRID < NGRID_BF_STEADY )  MC_not_finished(1);
-	FILE_TEVOL.close();
-	FILE_FLUX.close();
 }
-
-
-
-
-
-void time_ave(void)
-{
-	long l;
-	int i,j,k;
-	double weight;
-	long ngrid_total=NGRID_BF_STEADY+NGRID_AT_STEADY;
-
-
-	init_genrand(time(NULL)+genrand_int32());
-	init_state();
-
-
-
-
-	for(i=1;i<=NUM_SPEC;i++) {
-		sumS[i]=0;
-		sumS2[i]=0;
-	}
-	for(i=1;i<=NUM_REACT;i++) {
-		sumJ[i]=0;
-		for(j=1;j<=NUM_REACT;j++){
-			sumJ2[i][j]=0;
-		}
-	}
-	counter=0;
-	for(i=1;i<=NUM_SPEC;i++) 
-		for(j=0;j<=SMAX[i];j++)	counterS[i][j]=0;
-
-	for(i=1;i<=NUM_REACT;i++) counterv[i]=0;
-
-	while(INDEX_GRID < ngrid_total )  {
-		MC_not_finished(0);
-
-	}
-
-}
-
-
-
-
-
-
-void MC_results(void)
-{
-	int i, j, k;
-
-	for(i=1;i<=NUM_SPEC;i++){
-		aveS[i]=(double)sumS[i]/counter;
-		stdS[i]=sqrt((double)sumS2[i]/counter-aveS[i]*aveS[i]);
-	}
-
-	for(i=1;i<=NUM_REACT;i++){
-		aveJ[i]=(double)sumJ[i]/counter;
-	}
-	for(i=1;i<=NUM_REACT;i++)
-		for(j=1;j<=NUM_REACT;j++){
-			covJ[i][j]=(double)sumJ2[i][j]/counter-aveJ[i]*aveJ[j];
-		}
-
-	char filename[20];	
-	std::string mystr;
-	std::ofstream myfile;	
-
-	for(int i=1;i<=NUM_SPEC;i++){
-		std::ostringstream oss;
-		oss<<"s"<<i;
-		mystr= oss.str();		
-		strcpy(filename, mystr.c_str());
-		myfile.open(filename, std::ios::out);
-		for(j=0;j<=SMAX[i];j++) 
-			myfile<<j<<"\t"<<(double)counterS[i][j]/counter<<std::endl;
-		myfile.close();
-	}
-
-	myfile.open("s-ave-std", std::ios::out);
-	for(i=1;i<=NUM_SPEC;i++)
-		myfile<<i<<"\t"<<aveS[i]<<"\t"<<stdS[i]<<std::endl;
-	myfile.close();
-
-	myfile.open("J-ave-std", std::ios::out);
-	for(i=1;i<=NUM_REACT;i++)
-		myfile<<i<<"\t"<<aveJ[i]<<"\t"<<sqrt(covJ[i][i])<<std::endl;
-	myfile.close();
-
-	myfile.open("J-cov", std::ios::out);
-	myfile<<"#row_index column_index J-cov"<<std::endl;
-	for(i=1;i<=NUM_REACT;i++)
-		for(j=1;j<=NUM_REACT;j++)
-			myfile<<i<<"\t"<<j<<"\t"<<covJ[i][j]<<std::endl;
-	myfile.close();
-
-}	
-
-
 
 bool  MC_not_finished(int time_evolution)
 {
@@ -334,18 +210,11 @@ bool  MC_not_finished(int time_evolution)
 	
 	if(time_evolution==1){
 		while(TIME>INDEX_GRID*GRID_CONST) {
-			FILE_TEVOL<<INDEX_GRID*GRID_CONST<<"\t";
-			for(i=1;i<=NUM_SPEC;i++)
-				FILE_TEVOL<<S[i]<<"\t";
-			FILE_TEVOL<<std::endl;
-
-			FILE_FLUX << INDEX_GRID* GRID_CONST <<"\t";
-			for(i=1;i<=NUM_REACT;i++) 
-				FILE_FLUX << counterv[i]/GRID_CONST << "\t";
-			FILE_FLUX<<std::endl;
-			for(i=1;i<=NUM_REACT;i++) counterv[i]=0;
-
-
+			STR_OUTPUT <<  INDEX_GRID*GRID_CONST << " ";
+			for(i=1;i<=NUM_SPEC;i++){
+				STR_OUTPUT << S[i] << " ";
+			}
+			STR_OUTPUT << std::endl;
 			if(++INDEX_GRID>NGRID_BF_STEADY) return 0;
 		}
 
@@ -451,15 +320,3 @@ void init_state(void)
 
 
 
-
-
-/*
-void print_array(int *data, int number)
-{
-int i;
-for (i=0;i<number;i++){
-	printf("%d ", data[i]);
-	}
-printf("\n");
-}
-*/

@@ -1,0 +1,4 @@
+# MAC: when compiling c++ code, use the following command.
+# Windows: I am not sure yet how to do this. Probably, replacing install_name to soname. 
+g++ -shared -Wl,-install_name,libfoo.so -o libfoo.so  foo.cpp
+python test_ctype.py

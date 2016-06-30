@@ -1,0 +1,5 @@
+# print out mean and standard deviation of a column of numbers. 
+# Usage
+# ./ave-error.spt FILE_NAME
+# FILE_NAME should have a column of numbers.
+gawk -v sum=0 -v sum2=0 -v count=0 '{sum+=$1; x2=$1*$1; sum2+=x2; count++;}END{print sum/count, sqrt(sum2/count-(sum/count)^2)}' $1 

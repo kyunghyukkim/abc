@@ -1,0 +1,15 @@
+# git upload
+git status
+git add .
+git status
+git commit -m"gillespie simulation algorithm and python wrapper for c"
+git push
+
+# git download
+git pull
+
+# Interfacing c-code and python
+# MAC: when compiling c++ code, use the following command.
+# # Windows: I am not sure yet how to do this. Probably, replacing install_name to soname. 
+g++ -shared -Wl,-install_name,libfoo.so -o libfoo.so c-code/one_trajectory.cpp
+python gillespie.py  
