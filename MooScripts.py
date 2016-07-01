@@ -55,3 +55,12 @@ def sigmaj(t, index, N, pThetp, wgtp, pThetilde, wgtilde):
                 bit = numpy.sqrt(wgtp[i]*wgtilde[k]*(pThetilde[k] - pThetp[i])**2)
                 byte = byte + bit
             sigmabuild = sigmabuild + byte
+
+# Takes a prior distribution and samples them based on the cumulative version of a new distribution added by the
+# user. This means that in general larger parameters are more likely to be sampled.
+def CumulativeDistribution(pThetp, distfunc):
+    pThetn = numpy.sort(pThetp)
+    #randbit =  numpy.random.rand(1,1)
+    CumProd = numpy.cumsum(distfunc)
+    CumThet = numpy.cumsum(pThetn)
+    return [CumProd, CumThet]
