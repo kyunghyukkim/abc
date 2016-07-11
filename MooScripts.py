@@ -58,9 +58,25 @@ def sigmaj(t, index, N, pThetp, wgtp, pThetilde, wgtilde):
 
 # Takes a prior distribution and samples them based on the cumulative version of a new distribution added by the
 # user. This means that in general larger parameters are more likely to be sampled.
-def CumulativeDistribution(pThetp, distfunc):
+def CumulativeDistribution(pThetp):
+    print 'updated'
     pThetn = numpy.sort(pThetp)
-    #randbit =  numpy.random.rand(1,1)
-    CumProd = numpy.cumsum(distfunc)
-    CumThet = numpy.cumsum(pThetn)
-    return [CumProd, CumThet]
+    ThetBins = set(pThetn)
+    ThetVals = numpy.histogram(pThetn, len(ThetBins))
+    ThetBins = ThetVals[1]
+    ThetUnits = numpy.array(ThetVals[0]).astype('float')
+    print 'bins'
+    print ThetBins
+    print 'vals'
+    print ThetUnits
+    ThetProps = (1. * ThetUnits)/sum(ThetUnits)
+    CumDist = numpy.cumsum(ThetProps)
+    randbit =  round(numpy.random.rand(1,1),3)
+    print 'rand'
+    print randbit
+    print 'cum'
+    print CumDist
+    print 'RESULT'
+    ThetInter = numpy.interp(randbit, numpy.insert(CumDist, 0, 0), ThetBins)
+    print 'NOW'
+    return [ThetInter]
