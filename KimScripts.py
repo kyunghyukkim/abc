@@ -53,20 +53,67 @@ theta1      67.2929      21.1594      34.6431        60.97      46.8012
 theta2      87.2928      380.012      539.675      360.102      967.428
 theta3      30.9787      28.9047      36.9889      38.9364      30.5391
 """
-def initial_particles(theta, n):
-    index_name = []
-    for x in range(0, len(theta)):
-        index_name.append('theta'+str(x))
-    df = pd.DataFrame(columns=range(0,n), index=index_name)
-    for i,index in enumerate(index_name):
-    #    print i, index
+def initial_particles(param_input, n):
+    theta = param_input.loc['theta']
+    df = pd.DataFrame(columns=range(0,n), index=theta.index, dtype='object')
+    for i,index in zip(range(0, len(theta)), theta.index.tolist()):
+        print "i", i, index
         for col in range(0,n):
-            if theta[i] > 0:
-                df.set_value(index, col, numpy.random.uniform(theta[i]/10.,theta[i]*10,1)[0])
+            if theta.iloc[i][0] > 0:
+                df.set_value(index, col, numpy.random.uniform(theta.iloc[i][0]/10.,theta.iloc[i][0]*10,1)[0])
             else:
                 df.set_value(index, col, numpy.random.uniform(10**-6,10**-5,1)[0])
-    #print df
-    return df
+    df.columns = range(0,n)
+
+    param_inputs = pd.DataFrame(columns = range(0, n))
+
+    df_Sinit = pd.DataFrame()
+    df_t_param = pd.DataFrame()
+    for i in range(0,n):
+        df_Sinit[i] = param_input.loc['Sinit'][0]
+        df_t_param[i] = param_input.loc['t_param'][0]
+    print df_Sinit
+    print df_t_param
+    print df
+
+    dict = {'Sinit': df_Sinit, 'theta': df, 't_param': df_t_param}
+    param_inputs = pd.concat(dict)
+    return param_inputs
+
+
+# input: particles (pandas dataframe) and their weights (pandas dataframe)
+# output: selected particles' indices. list format.
+def select_particles(w, n):
+    index_selected = []
+    w_cumul = pd.Series(0.0, index = w.index)
+    for i in range(1, len(w)+1):
+        w_cumul[i-1] = w[0:i].sum()
+    #print w,w_cumul
+
+
+    for i in range(0, n):
+        rand = numpy.random.uniform(0, 1, 1)[0]
+
+        for j in range(0, len(w)-1):
+            if j==0 and rand < w_cumul[0]:
+                index_selected.append(0)
+                # print rand, index_selected
+            elif rand >= w_cumul[j] and rand < w_cumul[j+1]:
+                index_selected.append(j)
+                # print rand, index_selected, w_cumul[j], w_cumul[j+1], j
+            else:
+                #print j, rand
+                j = j+1
+
+    #print len(index_selected), len(thetas)
+    #print index_selected
+    return index_selected
+
+# thetas = pd.Series(int(x) for x in numpy.random.uniform(0, 20, 20))
+# w = pd.Series(range(0,20), index = thetas.index)
+# w = w/w.sum()
+# select_particles(thetas, w, 20)
+
 
 #initial_particles([0,10,100,4], 10)
 
@@ -116,7 +163,7 @@ def efficiency(vector, n):
     return s
 
 
-n = 100000
-sample = sampler(n)
-print sample
-# efficiency(sample, n)
+# n = 100000
+# sample = sampler(n)
+# print sample
+# # efficiency(sample, n)

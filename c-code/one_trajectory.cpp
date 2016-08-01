@@ -82,6 +82,7 @@ char * gillespie(char *str)
 		i++;
 		}
 	return cstr2;
+	//return cstr;
 }
 
 	
