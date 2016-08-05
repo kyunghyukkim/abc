@@ -16,7 +16,9 @@ lib.gillespie.restype = c_char_p
 # Second last param: Number of data points.
 # the last param: not necessary at this point. 
 
-param_input = '10 0  100  0.4    2   100   0.1  0.02   10000   240000'
+param_input = '10 0  100  0.4    2   100   0.1  0.02   10   240000'
 str_return = lib.gillespie(param_input)
+str_return2 = lib.gillespie(param_input)
 print str_return
-
+print "*************"
+print str_return2

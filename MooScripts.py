@@ -3,15 +3,19 @@ __author__ = 'Keagan Moo'
 import numpy
 
 # euclidd (Euclidean Distance Function) will take two lists of points
+# Kim: to speed up the computation by using vetors, lists need to be pandas.Series.
 # and calculate the distance between the two using the euclidian distance
 # function. Which is described by sqrt((x1 - x2)^2+(y1 - y2)^2 ...)
 def euclidd(list1, list2):
     iter = len(list1)
-    sum = 0
-    for i in range(iter):
-        gap = (list1[i] - list2[i]) ** 2
-        sum = sum + gap
-    return sum ** (0.5)
+    # sum = 0
+    # for i in range(iter):
+    #     gap = (list1[i] - list2[i]) ** 2
+    #     sum = sum + gap
+    # return sum ** (0.5)
+    diff = list1 - list2
+    return (diff.apply(lambda x: x**2).sum())**0.5
+
 
 # weightt (Weight Calculator) takes a tolerance counter value,
 # a total number of particles, a previous weight vector,
