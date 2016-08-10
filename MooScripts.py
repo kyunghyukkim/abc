@@ -38,6 +38,8 @@ def weightt(t, N, wgtp, pThet, pThetp, pTurb, piTurb):
 # it is defined online, but could be changed if needed. It takes the total number
 # of particles, a standard deviation and the current and previous parameter distributions
 # (theta).
+
+# Change to multi-variate normal
 def Kpert(t, N, sigj, pThet, pThetp):
     product = 1
     for j in range(N):
@@ -84,3 +86,9 @@ def CumulativeDistribution(pThetp):
     ThetInter = numpy.interp(randbit, numpy.insert(CumDist, 0, 0), ThetBins)
     print 'NOW'
     return [ThetInter]
+
+def RejectionSample(pThetp):
+
+
+
+    return(pThetp)

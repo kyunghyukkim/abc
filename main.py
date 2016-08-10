@@ -118,7 +118,7 @@ for t in range(0, N_iter):
             temp[k] = param[ind]
         #print temp
         temp.join(get_params_from_K(N_part - lon(param_input_index_selected)))
-        exit(1)
+        #exit(1)
         #param_inputs = perturbed according to a transition kernel K
 
 
