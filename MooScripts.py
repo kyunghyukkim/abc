@@ -92,3 +92,28 @@ def RejectionSample(pThetp):
 
 
     return(pThetp)
+
+def RejectionSampling(pThetp, N):
+
+    print 'REJECTEDDDD'
+    #pThetn = numpy.sort(pThetp)
+    length = numpy.maximum(pThetn)
+
+    index = 1
+    attempts = []
+    success = []
+
+    while index <= N:
+        xval = numpy.random.uniform(0, length)
+        yval = numpy.random.uniform(0,1)
+        attempt = [xval, yval]
+
+        attempts = [attempts, attempt]
+
+        if yval <= Thetn[xval]:
+            success = [success, xval]
+            index = index + 1
+
+
+    return [success]
+
