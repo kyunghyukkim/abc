@@ -41,7 +41,7 @@ initial_particles( dimension of theta, number of particles)
 
 For example, initial_particles([0,10,100,4], 10).
 This returns pandas DataFrame structure as shown below.
-                  0            1            2            3           4  \
+                  0            1            2            3           4
 theta0  6.50465e-06  1.30545e-06  6.00645e-06  1.51863e-06  5.8941e-06
 theta1      1.11194      77.6596      47.1341      60.5072     15.1167
 theta2      40.5187      587.044      456.305      601.678     859.439

@@ -1,6 +1,7 @@
 #!/Anaconda/python
 __author__ = 'Keagan Moo'
 import numpy
+import pandas
 
 # euclidd (Euclidean Distance Function) will take two lists of points
 # Kim: to speed up the computation by using vetors, lists need to be pandas.Series.
@@ -93,27 +94,49 @@ def RejectionSample(pThetp):
 
     return(pThetp)
 
-def RejectionSampling(pThetp, N):
+def RejectionSampling(pThetp, range, N, type = 'Box', var = 1):
 
     print 'REJECTEDDDD'
-    #pThetn = numpy.sort(pThetp)
-    length = numpy.maximum(pThetn)
+    #pThetp = numpy.sort(pThetp)
+    #begin = numpy.amin(pThetp)
+    #length = numpy.amax(pThetp)
+    longth = length(range)
+    center = numpy.mean(range)
 
     index = 1
     attempts = []
     success = []
 
-    while index <= N:
-        xval = numpy.random.uniform(0, length)
-        yval = numpy.random.uniform(0,1)
-        attempt = [xval, yval]
+    if (type == 'Box'):
 
-        attempts = [attempts, attempt]
+        while index <= N:
+            xval = numpy.random.uniform(0, longth)
+            yval = numpy.random.uniform(0,1)
+            attempt = [xval, yval]
 
-        if yval <= Thetn[xval]:
-            success = [success, xval]
-            index = index + 1
+            attempts = [attempts, attempt]
 
+            if yval <= pThetp(xval):
+                success = [success, xval]
+                index = index + 1
 
+    elif (type == 'Normal'):
+
+        g = lambda x: 1/numpy.sqrt(2*3.14159*var)*numpy.exp(-(x-center)**2/(2*var))
+        ScalingFactor = numpy.amax(pThetp(range)/g(range))
+
+        while index <= N:
+
+            xval = numpy.random.uniform(0, longth)
+            yval = numpy.random.uniform(0, ScalingFactor * g(xval))
+            attempt = [xval, yval]
+
+            attempts = [attempts, attempt]
+
+            if yval <= pThetp(xval):
+                success = [success, xval]
+                index = index + 1
+
+    success = 'Divinity'
     return [success]
 
