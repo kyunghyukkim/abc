@@ -66,7 +66,6 @@ def sigmaj(t, index, N, pThetp, wgtp, pThetilde, wgtilde):
 # Takes a prior distribution and samples them based on the cumulative version of a new distribution added by the
 # user. This means that in general larger parameters are more likely to be sampled.
 def CumulativeDistribution(pThetp):
-    print 'updated'
     pThetn = numpy.sort(pThetp)
     ThetBins = set(pThetn)
     ThetVals = numpy.histogram(pThetn, len(ThetBins))
@@ -79,13 +78,7 @@ def CumulativeDistribution(pThetp):
     ThetProps = (1. * ThetUnits)/sum(ThetUnits)
     CumDist = numpy.cumsum(ThetProps)
     randbit =  round(numpy.random.rand(1,1),3)
-    print 'rand'
-    print randbit
-    print 'cum'
-    print CumDist
-    print 'RESULT'
     ThetInter = numpy.interp(randbit, numpy.insert(CumDist, 0, 0), ThetBins)
-    print 'NOW'
     return [ThetInter]
 
 def RejectionSample(pThetp):
@@ -94,14 +87,15 @@ def RejectionSample(pThetp):
 
     return(pThetp)
 
-def RejectionSampling(pThetp, range, N, type = 'Box', var = 1):
 
-    print 'REJECTEDDDD'
-    #pThetp = numpy.sort(pThetp)
-    #begin = numpy.amin(pThetp)
-    #length = numpy.amax(pThetp)
+# Takes a distribution function pThetp that represents the distribution of parameters functionalized, the range
+# this function is to act over, the number of samples you would like, the type of evnelope you want to use
+# and the variance of the Normal distribution should you want it. It produces N number of samples that
+# are accepted into the pThetp function.
+def RejectionSampling(pThetp, range, N, type = 'Box', var = 1, center = numpy.mean(range)):
+
+    # for indexing purposes
     longth = length(range)
-    center = numpy.mean(range)
 
     index = 1
     attempts = []
@@ -137,6 +131,10 @@ def RejectionSampling(pThetp, range, N, type = 'Box', var = 1):
                 success = [success, xval]
                 index = index + 1
 
-    success = 'Divinity'
+    else:
+
+        print "Unrecognized Type: Options Currently available are \"Box\" and \"Normal\"."
+        success = -1
+
     return [success]
 
