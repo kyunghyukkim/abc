@@ -94,7 +94,6 @@ def RejectionSample(pThetp):
 # are accepted into the pThetp function.
 def RejectionSampling(type = 'Box', var = 1, center = -666):
 
-    #range = numpy.arange(-2,2,0.2)
     range = [-2, 2]
 
     N = 40
@@ -104,9 +103,6 @@ def RejectionSampling(type = 'Box', var = 1, center = -666):
             return 1
         else:
             return 0
-
-    # for indexing purposes
-    longth = len(range)
 
     if (center == -666):
         center = numpy.mean(range)
@@ -131,9 +127,28 @@ def RejectionSampling(type = 'Box', var = 1, center = -666):
     elif (type == 'Normal'):
 
         g = lambda x: 1/numpy.sqrt(2*3.14159*var)*numpy.exp(-(x-center)**2/(2*var))
-        print (g(range))
-        print (pThetp(range)/g(range))
-        ScalingFactor = numpy.amax(pThetp(range)/g(range))
+        print("min MAX")
+        print(numpy.amin(range))
+        print(numpy.amax(range))
+        bitrange = numpy.linspace(numpy.amin(range), numpy.amax(range), 100)
+        print("bitrange")
+        print(bitrange)
+        print("Normal Dist")
+        print (g(bitrange))
+        print(".all()?")
+        pThetpall = []
+        i = 0
+        print (len(bitrange))
+        while i < len(bitrange):
+            bite = (pThetp(bitrange[i]))
+            pThetpall.append(bite)
+            i = i + 1
+        print(pThetpall)
+        print("pThetp Dist")
+        print (pThetpall)
+        print("Scaling Factors?")
+        print (pThetpall/g(bitrange))
+        ScalingFactor = numpy.amax(pThetpall/g(bitrange))
         print(ScalingFactor)
 
         while index <= N:
