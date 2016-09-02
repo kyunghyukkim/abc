@@ -92,10 +92,24 @@ def RejectionSample(pThetp):
 # this function is to act over, the number of samples you would like, the type of evnelope you want to use
 # and the variance of the Normal distribution should you want it. It produces N number of samples that
 # are accepted into the pThetp function.
-def RejectionSampling(pThetp, range, N, type = 'Box', var = 1, center = numpy.mean(range)):
+def RejectionSampling(type = 'Box', var = 1, center = -666):
+
+    #range = numpy.arange(-2,2,0.2)
+    range = [-2, 2]
+
+    N = 40
+
+    def pThetp(x):
+        if ((x > -1) & (x < 1)):
+            return 1
+        else:
+            return 0
 
     # for indexing purposes
-    longth = length(range)
+    longth = len(range)
+
+    if (center == -666):
+        center = numpy.mean(range)
 
     index = 1
     attempts = []
@@ -104,31 +118,34 @@ def RejectionSampling(pThetp, range, N, type = 'Box', var = 1, center = numpy.me
     if (type == 'Box'):
 
         while index <= N:
-            xval = numpy.random.uniform(0, longth)
+            xval = numpy.random.uniform(numpy.amin(range), numpy.amax(range))
             yval = numpy.random.uniform(0,1)
             attempt = [xval, yval]
 
-            attempts = [attempts, attempt]
+            attempts = numpy.append(attempts, attempt)
 
             if yval <= pThetp(xval):
-                success = [success, xval]
+                success = numpy.append(success, xval)
                 index = index + 1
 
     elif (type == 'Normal'):
 
         g = lambda x: 1/numpy.sqrt(2*3.14159*var)*numpy.exp(-(x-center)**2/(2*var))
+        print (g(range))
+        print (pThetp(range)/g(range))
         ScalingFactor = numpy.amax(pThetp(range)/g(range))
+        print(ScalingFactor)
 
         while index <= N:
 
-            xval = numpy.random.uniform(0, longth)
+            xval = numpy.random.uniform(numpy.amin(range), numpy.amax(range))
             yval = numpy.random.uniform(0, ScalingFactor * g(xval))
             attempt = [xval, yval]
 
-            attempts = [attempts, attempt]
+            attempts = numpy.append(attempts, attempt)
 
             if yval <= pThetp(xval):
-                success = [success, xval]
+                success = numpy.append(success, xval)
                 index = index + 1
 
     else:
@@ -136,5 +153,5 @@ def RejectionSampling(pThetp, range, N, type = 'Box', var = 1, center = numpy.me
         print "Unrecognized Type: Options Currently available are \"Box\" and \"Normal\"."
         success = -1
 
-    return [success]
+    return success
 
