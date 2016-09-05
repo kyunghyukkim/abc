@@ -1,19 +1,14 @@
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <string>
-#include <math.h>
-#include <stdlib.h>
 #include <stdio.h>
-#include <time.h>
-#include <cstring>
-#include "./lib/mt19937ar-cok.cpp"
-#include "./lib/corfun.cpp"
-#include "./lib/average.cpp"
+#include<iostream>
+using namespace std;
 
-void TestPrint(void);
+extern "C" {
+	void TestVoid(void);
+}
 
-void TestPrint()
+void TestVoid(void)
 {
-   printf("Heart of Sin\n");
+	
+   cout << "Hello World!";
+   
 }

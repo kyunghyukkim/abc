@@ -19,6 +19,7 @@ lib.gillespie.argtypes = [charptr]
 # Third lasts param: time interval
 # Second last param: Number of data points.
 # the last param: not necessary at this point.
+#str_return = lib.propensity()
 param_input = c_char_p("10 0  100  0.4    2   100   0.1  0.02   10   240000")
 str_return = lib.gillespie(param_input)
 str_return2 = lib.gillespie(param_input)
