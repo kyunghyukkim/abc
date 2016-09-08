@@ -48,6 +48,26 @@ def Kpert(t, N, sigj, pThet, pThetp):
         product = product * bit
     return product
 
+def PerturbationKernel(particles):
+
+    rowCount = particles.shape[1]
+    colCount = particles.shape[2]
+    means = []
+    index = 1
+    while index < rowCount:
+        label = "theta"
+        label += (index - 1)
+        subjectParam = particles.loc(label)
+        numpy.append(means, numpy.mean(subjectParam))
+        CovarPrep = pandas.DataFrame([CovarPrep,subjectParam])
+    Covar = numpy.cov(CovarPrep)
+
+    results = numpy.random.multivariate_normal(means, Covar)
+
+    return results
+
+
+
 # sigmaj produces the deviation for the Kpert function from the various statistical
 # properties of the system. It takes past distributions and the index you are currently
 # on to get the new sigmaj.
@@ -80,12 +100,6 @@ def CumulativeDistribution(pThetp):
     randbit =  round(numpy.random.rand(1,1),3)
     ThetInter = numpy.interp(randbit, numpy.insert(CumDist, 0, 0), ThetBins)
     return [ThetInter]
-
-def RejectionSample(pThetp):
-
-
-
-    return(pThetp)
 
 
 # Takes a distribution function pThetp that represents the distribution of parameters functionalized, the range

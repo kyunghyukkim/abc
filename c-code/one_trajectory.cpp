@@ -11,6 +11,9 @@
 #include "./lib/corfun.cpp"
 #include "./lib/average.cpp"
 
+#include<iostream>
+using namespace std;
+
 //using namespace std;
 #define MAX(c1,c2) ((c1>c2)? c1:c2)
 
@@ -81,6 +84,9 @@ char * gillespie(char *str)
 		cstr2[i] = cstr[i];
 		i++;
 		}
+   cout << "Hello You!\n";
+   cout << cstr2;
+   cout << "\n";
 	return cstr2;
 	//return cstr;
 }

@@ -6,10 +6,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ba22a62d-7ff7-44b8-bf6f-9a1530b2729d" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/c-code/TestC.o" afterPath="$PROJECT_DIR$/c-code/TestC.o" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/c-code/TestC.cpp" afterPath="$PROJECT_DIR$/c-code/TestC.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/TestPyCC.py" afterPath="$PROJECT_DIR$/TestPyCC.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/gillespieWin.py" afterPath="$PROJECT_DIR$/gillespieWin.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/libfoo.so" afterPath="$PROJECT_DIR$/libfoo.so" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/c-code/libfoo.so" afterPath="$PROJECT_DIR$/c-code/libfoo.so" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/c-code/one_trajectory.o" afterPath="$PROJECT_DIR$/c-code/one_trajectory.o" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/MooScripts.py" afterPath="$PROJECT_DIR$/MooScripts.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/c-code/one_trajectory.cpp" afterPath="$PROJECT_DIR$/c-code/one_trajectory.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="abc.iws" />
@@ -46,28 +47,28 @@
       <file leaf-file-name="gillespie.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/gillespie.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-5.6666665">
-              <caret line="9" column="32" selection-start-line="9" selection-start-column="24" selection-end-line="9" selection-end-column="32" />
+            <state vertical-scroll-proportion="-15.111111">
+              <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="gillespieWin.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="gillespieWin.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/gillespieWin.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-5.160714">
+            <state vertical-scroll-proportion="0.57247436">
               <caret line="23" column="8" selection-start-line="23" selection-start-column="8" selection-end-line="23" selection-end-column="8" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TestPyCC.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="TestPyCC.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/TestPyCC.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.19345662">
-              <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
+            <state vertical-scroll-proportion="-6.9259257">
+              <caret line="11" column="0" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -76,10 +77,16 @@
       <file leaf-file-name="MooScripts.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/MooScripts.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-14.481482">
-              <caret line="143" column="34" selection-start-line="143" selection-start-column="34" selection-end-line="143" selection-end-column="34" />
+            <state vertical-scroll-proportion="-6.851852">
+              <caret line="49" column="0" selection-start-line="49" selection-start-column="0" selection-end-line="49" selection-end-column="0" />
               <folding>
                 <element signature="e#45#57#0" expanded="true" />
+                <element signature="e#400#630#0" expanded="false" />
+                <element signature="e#974#1199#0" expanded="false" />
+                <element signature="e#1538#1718#0" expanded="false" />
+                <element signature="e#2476#2804#0" expanded="false" />
+                <element signature="e#3041#3539#0" expanded="false" />
+                <element signature="e#3971#5997#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -88,7 +95,7 @@
       <file leaf-file-name="KimScripts.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/KimScripts.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
+            <state vertical-scroll-proportion="-38.407406">
               <caret line="82" column="0" selection-start-line="82" selection-start-column="0" selection-end-line="82" selection-end-column="0" />
               <folding />
             </state>
@@ -115,9 +122,9 @@
         <option value="$PROJECT_DIR$/main.py" />
         <option value="$PROJECT_DIR$/KimScripts.py" />
         <option value="$PROJECT_DIR$/gillespie.py" />
-        <option value="$PROJECT_DIR$/MooScripts.py" />
         <option value="$PROJECT_DIR$/gillespieWin.py" />
         <option value="$PROJECT_DIR$/TestPyCC.py" />
+        <option value="$PROJECT_DIR$/MooScripts.py" />
       </list>
     </option>
   </component>
@@ -125,9 +132,10 @@
     <order />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-7" />
-    <option name="width" value="1612" />
-    <option name="height" value="867" />
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="1616" />
+    <option name="height" value="876" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <OptionsSetting value="true" id="Add" />
@@ -397,10 +405,10 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="0" width="1612" height="867" extended-state="0" />
+    <frame x="-8" y="-8" width="1616" height="876" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.12343358" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.123125" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.328125" sideWeight="0.509375" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
@@ -438,7 +446,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="1" />
+      <option name="time" value="2" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -475,6 +483,12 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#45#57#0" expanded="true" />
+            <element signature="e#400#630#0" expanded="false" />
+            <element signature="e#974#1199#0" expanded="false" />
+            <element signature="e#1538#1718#0" expanded="false" />
+            <element signature="e#2476#2804#0" expanded="false" />
+            <element signature="e#3041#3539#0" expanded="false" />
+            <element signature="e#3971#5997#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -510,6 +524,12 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#45#57#0" expanded="true" />
+            <element signature="e#400#630#0" expanded="false" />
+            <element signature="e#974#1199#0" expanded="false" />
+            <element signature="e#1538#1718#0" expanded="false" />
+            <element signature="e#2476#2804#0" expanded="false" />
+            <element signature="e#3041#3539#0" expanded="false" />
+            <element signature="e#3971#5997#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -552,6 +572,12 @@
           <caret line="16" column="50" selection-start-line="16" selection-start-column="50" selection-end-line="16" selection-end-column="50" />
           <folding>
             <element signature="e#45#57#0" expanded="true" />
+            <element signature="e#400#630#0" expanded="false" />
+            <element signature="e#974#1199#0" expanded="false" />
+            <element signature="e#1538#1718#0" expanded="false" />
+            <element signature="e#2476#2804#0" expanded="false" />
+            <element signature="e#3041#3539#0" expanded="false" />
+            <element signature="e#3971#5997#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -587,6 +613,12 @@
           <caret line="16" column="50" selection-start-line="16" selection-start-column="50" selection-end-line="16" selection-end-column="50" />
           <folding>
             <element signature="e#45#57#0" expanded="true" />
+            <element signature="e#400#630#0" expanded="false" />
+            <element signature="e#974#1199#0" expanded="false" />
+            <element signature="e#1538#1718#0" expanded="false" />
+            <element signature="e#2476#2804#0" expanded="false" />
+            <element signature="e#3041#3539#0" expanded="false" />
+            <element signature="e#3971#5997#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -622,6 +654,12 @@
           <caret line="16" column="50" selection-start-line="16" selection-start-column="50" selection-end-line="16" selection-end-column="50" />
           <folding>
             <element signature="e#45#57#0" expanded="true" />
+            <element signature="e#400#630#0" expanded="false" />
+            <element signature="e#974#1199#0" expanded="false" />
+            <element signature="e#1538#1718#0" expanded="false" />
+            <element signature="e#2476#2804#0" expanded="false" />
+            <element signature="e#3041#3539#0" expanded="false" />
+            <element signature="e#3971#5997#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -657,6 +695,12 @@
           <caret line="16" column="50" selection-start-line="16" selection-start-column="50" selection-end-line="16" selection-end-column="50" />
           <folding>
             <element signature="e#45#57#0" expanded="true" />
+            <element signature="e#400#630#0" expanded="false" />
+            <element signature="e#974#1199#0" expanded="false" />
+            <element signature="e#1538#1718#0" expanded="false" />
+            <element signature="e#2476#2804#0" expanded="false" />
+            <element signature="e#3041#3539#0" expanded="false" />
+            <element signature="e#3971#5997#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -692,6 +736,12 @@
           <caret line="71" column="41" selection-start-line="71" selection-start-column="41" selection-end-line="71" selection-end-column="41" />
           <folding>
             <element signature="e#45#57#0" expanded="true" />
+            <element signature="e#400#630#0" expanded="false" />
+            <element signature="e#974#1199#0" expanded="false" />
+            <element signature="e#1538#1718#0" expanded="false" />
+            <element signature="e#2476#2804#0" expanded="false" />
+            <element signature="e#3041#3539#0" expanded="false" />
+            <element signature="e#3971#5997#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -727,6 +777,12 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#45#57#0" expanded="true" />
+            <element signature="e#400#630#0" expanded="false" />
+            <element signature="e#974#1199#0" expanded="false" />
+            <element signature="e#1538#1718#0" expanded="false" />
+            <element signature="e#2476#2804#0" expanded="false" />
+            <element signature="e#3041#3539#0" expanded="false" />
+            <element signature="e#3971#5997#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -754,6 +810,12 @@
           <caret line="60" column="33" selection-start-line="60" selection-start-column="33" selection-end-line="60" selection-end-column="33" />
           <folding>
             <element signature="e#45#57#0" expanded="true" />
+            <element signature="e#400#630#0" expanded="false" />
+            <element signature="e#974#1199#0" expanded="false" />
+            <element signature="e#1538#1718#0" expanded="false" />
+            <element signature="e#2476#2804#0" expanded="false" />
+            <element signature="e#3041#3539#0" expanded="false" />
+            <element signature="e#3971#5997#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -821,24 +883,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/KimScripts.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="82" column="0" selection-start-line="82" selection-start-column="0" selection-end-line="82" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MooScripts.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-14.481482">
-          <caret line="143" column="34" selection-start-line="143" selection-start-column="34" selection-end-line="143" selection-end-column="34" />
-          <folding>
-            <element signature="e#45#57#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-36.732143">
@@ -851,24 +895,48 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/gillespie.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-5.6666665">
-          <caret line="9" column="32" selection-start-line="9" selection-start-column="24" selection-end-line="9" selection-end-column="32" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/gillespieWin.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-5.160714">
-          <caret line="23" column="8" selection-start-line="23" selection-start-column="8" selection-end-line="23" selection-end-column="8" />
+        <state vertical-scroll-proportion="-15.111111">
+          <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/TestPyCC.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.19345662">
-          <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
+        <state vertical-scroll-proportion="-6.9259257">
+          <caret line="11" column="0" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/KimScripts.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-38.407406">
+          <caret line="82" column="0" selection-start-line="82" selection-start-column="0" selection-end-line="82" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MooScripts.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-6.851852">
+          <caret line="49" column="0" selection-start-line="49" selection-start-column="0" selection-end-line="49" selection-end-column="0" />
+          <folding>
+            <element signature="e#45#57#0" expanded="true" />
+            <element signature="e#400#630#0" expanded="false" />
+            <element signature="e#974#1199#0" expanded="false" />
+            <element signature="e#1538#1718#0" expanded="false" />
+            <element signature="e#2476#2804#0" expanded="false" />
+            <element signature="e#3041#3539#0" expanded="false" />
+            <element signature="e#3971#5997#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gillespieWin.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.57247436">
+          <caret line="23" column="8" selection-start-line="23" selection-start-column="8" selection-end-line="23" selection-end-column="8" />
           <folding />
         </state>
       </provider>
