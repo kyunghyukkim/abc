@@ -3,12 +3,29 @@
 using namespace std;
 
 extern "C" {
-	void TestVoid(void);
+	
+   __declspec(dllexport) void TestVoid(void);
+   __declspec(dllexport) char * TestStr(char*);
+   
 }
+
 
 void TestVoid(void)
 {
+
+   cout << "HelloWorld\n";
+
+}
+
+char * TestStr(char *str)
+{
 	
+   cout << "str\n";
+   cout << str;
+   cout << "\n";
+   cout << "*str\n";
+   cout << *str;
+   cout << "\n";
    cout << "Hello World!";
    
 }

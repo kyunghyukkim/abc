@@ -9,8 +9,8 @@ lib = cdll.LoadLibrary('./libfoo.so')
 
 charty = c_char_p
 charptr = POINTER(charty)
-lib.gillespie.restype = charptr
-lib.gillespie.argtypes = [charptr]
+lib.gillespie.restype = charty
+lib.gillespie.argtypes = [charty]
 
 # math model is defined in c codes. 
 # three species: init copy numbers = [10, 0, 100]

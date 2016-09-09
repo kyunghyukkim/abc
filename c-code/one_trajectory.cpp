@@ -69,7 +69,7 @@ char * gillespie(char *str)
 {
 	cout << "str\n";
    cout << str;
-   cout << "\n";s
+   cout << "\n";
    cout << "*str\n";
    cout << *str;
    cout << "\n";
