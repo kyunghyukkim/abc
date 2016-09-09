@@ -21,6 +21,8 @@ lib.gillespie.argtypes = [charptr]
 # the last param: not necessary at this point.
 #str_return = lib.propensity()
 param_input = c_char_p("10 0  100  0.4    2   100   0.1  0.02   10   240000")
+print("Test ME")
+print(param_input)
 str_return = lib.gillespie(param_input)
 str_return2 = lib.gillespie(param_input)
 str_return3 = lib.gillespie(param_input)

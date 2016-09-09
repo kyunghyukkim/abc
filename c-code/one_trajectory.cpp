@@ -67,16 +67,35 @@ bool  MC_not_finished(std::stringstream& str);
 
 char * gillespie(char *str)
 {
-	std::stringstream STR_OUTPUT;
+	cout << "str\n";
+   cout << str;
+   cout << "\n";s
+   cout << "*str\n";
+   cout << *str;
+   cout << "\n";
+   
+   std::stringstream STR_OUTPUT;
 	
+   cout << "STR_OUTPUT\n";
+   cout << STR_OUTPUT;
+   cout << "\n";
+   
 	model_def(str, STR_OUTPUT);
 	time_evol(STR_OUTPUT);
 	
 	const std::string& tmp = STR_OUTPUT.str();
+   cout << "tmp\n";
+   cout << tmp;
+   cout << "\n";
+   
 	STR_OUTPUT.str("");
 	STR_OUTPUT.clear();
 	
 	const char* cstr = tmp.c_str();
+   
+   cout << "cstr\n";
+   cout << cstr;
+   cout << "\n";
 
 	int i=0;
 	char * cstr2 = static_cast<char *>(malloc(strlen(cstr) * sizeof(char)));
