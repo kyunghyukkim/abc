@@ -20,12 +20,15 @@ void TestVoid(void)
 char * TestStr(char *str)
 {
 	
-   cout << "str\n";
-   cout << str;
-   cout << "\n";
-   cout << "*str\n";
-   cout << *str;
-   cout << "\n";
-   cout << "Hello World!";
+   // cout << "str\n";
+   // cout << str;
+   // cout << "\n";
+   // cout << "*str\n";
+   // cout << *str;
+   // cout << "\n";
+   // cout << "Hello World!";
    
+   char * test;
+   test = "Hello char string";
+   return test;
 }

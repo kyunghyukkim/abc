@@ -79,6 +79,9 @@ char * gillespie(char *str)
    cout << "STR_OUTPUT\n";
    cout << STR_OUTPUT;
    cout << "\n";
+   cout << "str before\n";
+   cout << str;
+   cout << "\n";
    
 	model_def(str, STR_OUTPUT);
 	time_evol(STR_OUTPUT);
@@ -115,7 +118,15 @@ void model_def(char *str_c, std::stringstream& STR_OUTPUT)
 {
 	int i,j ;
 	
+   cout << "str_c\n";
+   cout << str_c;
+   cout << "\n";
+   
 	std::stringstream str(str_c);
+
+   cout << "str STREAMED\n";
+   cout << str;
+   cout << "\n";
 
 	NUM_SPEC=3;
 	NUM_SPEC2=NUM_SPEC*NUM_SPEC;
@@ -132,16 +143,26 @@ void model_def(char *str_c, std::stringstream& STR_OUTPUT)
 	counterS=(long **)calloc(NUM_SPEC+1, sizeof(long *));
 	SMAX=(long *)calloc(NUM_SPEC+1, sizeof(long));
 
-
+   cout << "STREAMING IN 1\n";
 	for(i=1;i<=NUM_SPEC;i++) {
 		str >> INIT_S[i];
+      cout << INIT_S;
+      cout << "\n";
 	}
 
+   cout << "STREAMING IN 2\n";
 	for(i=1;i<=NUM_PARAM;i++) {
 		str >> C[i];
+      cout << C;
+      cout << "\n";
 	}
 
 	 str >> GRID_CONST >> NGRID_BF_STEADY ;
+    
+    cout << "GRID_CONST?\n";
+    cout << str;
+    cout << "\n";
+    
 	// output string memory allocation
 	// time and S1 with NGRID_BF_STEADY items. 
 	
@@ -172,6 +193,9 @@ void model_def(char *str_c, std::stringstream& STR_OUTPUT)
 	stoi[2][4]=1;
 	stoi[3][3]=1;
 	stoi[3][4]=-1;
+   
+   cout << "MODEL\n";
+
 
 
 }
@@ -189,9 +213,15 @@ void propensity(void)
 void time_evol(std::stringstream& STR_OUTPUT)
 {
 	
+   cout << "TIME START\n";
+   
 	init_genrand(time(NULL)+genrand_int32());
+   
+   cout << "Geriatric\n";
+   
 	init_state();
-		
+   
+   cout << "State\n";		
 
 	//STR_OUTPUT << std::endl;	
 	//STR_OUTPUT << "Time" << " ";
@@ -200,6 +230,8 @@ void time_evol(std::stringstream& STR_OUTPUT)
 	//}
 	//STR_OUTPUT << std::endl;	
 	while(INDEX_GRID < NGRID_BF_STEADY )  MC_not_finished(STR_OUTPUT);
+   
+   cout << "TIME\n";
 }
 
 bool  MC_not_finished(std::stringstream& STR_OUTPUT)
@@ -210,23 +242,38 @@ bool  MC_not_finished(std::stringstream& STR_OUTPUT)
 	int index;
 	int i;
 
+   cout << "Going to Propensity\n";
+
 	propensity();
 	for(i=1;i<=NUM_REACT;i++) sum_rate+=v[i];
+
+   cout << "Propensity For-d\n";
 
 	if(sum_rate!=0) {
 		DELT=-log(genrand_real3())/sum_rate;
 		for(i=1;i<=NUM_REACT;i++) sv[i]=v[i]/sum_rate;
 	}
+   
+   cout << "IF?\n";
+   
 	//if reaction finishes, then new DELT is going to be the last DELT just before reaction finishes.
 	TIME+=DELT;
+   cout << "YOU\n";
 	while(TIME>INDEX_GRID*GRID_CONST) {
+      cout << "SAY\n";
+      cout << "INDEX GRID\n";
+      cout << INDEX_GRID;
+      cout << "\nGRID_CONST\n";
+      cout << GRID_CONST;
+      cout << "\n";
 		STR_OUTPUT <<  INDEX_GRID*GRID_CONST << " ";
+      cout << "SO\n";
 		for(i=1;i<=NUM_SPEC;i++){
 			STR_OUTPUT << S[i] << " ";
 		}
-		
+		cout << "FUCK\n";
 		STR_OUTPUT << std::endl;
-		
+		cout << S[1];
 		if(++INDEX_GRID>NGRID_BF_STEADY) return 0;
 	}
 

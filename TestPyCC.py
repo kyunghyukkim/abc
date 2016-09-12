@@ -12,11 +12,11 @@ parinput = "Wat?"
 
 lib.TestVoid(parinput)
 
-
 lib.TestStr.restype = chartype
 lib.TestStr.argtypes = [chartype]
 
 parinput = "Wat?"
 
-lib.TestStr(parinput)
+result = lib.TestStr(parinput)
+print(result)
 
