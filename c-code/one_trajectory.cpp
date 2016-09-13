@@ -125,7 +125,7 @@ void model_def(char *str_c, std::stringstream& STR_OUTPUT)
 	std::stringstream str(str_c);
 
    cout << "str STREAMED\n";
-   cout << str;
+   cout << str.str();
    cout << "\n";
 
 	NUM_SPEC=3;
@@ -139,28 +139,40 @@ void model_def(char *str_c, std::stringstream& STR_OUTPUT)
 	stdS=(double *)calloc(NUM_SPEC+1, sizeof(double));
 	sumS=(double *)calloc(NUM_SPEC+1, sizeof(double));
 	sumS2=(double *)calloc(NUM_SPEC+1, sizeof(double));
-	C=(double *)calloc(NUM_PARAM+1, sizeof(double));
+   C=(double *)calloc(NUM_PARAM+1, sizeof(double));
 	counterS=(long **)calloc(NUM_SPEC+1, sizeof(long *));
 	SMAX=(long *)calloc(NUM_SPEC+1, sizeof(long));
+
+   cout << "INIT_S\n";
+   cout << INIT_S;
+   cout << "\n";
+   
+   cout << "C\n";
+   cout << C;
+   cout << "\n";
 
    cout << "STREAMING IN 1\n";
 	for(i=1;i<=NUM_SPEC;i++) {
 		str >> INIT_S[i];
-      cout << INIT_S;
+      cout << "INIT_S burh\n";
+      cout << INIT_S[i];
       cout << "\n";
 	}
 
    cout << "STREAMING IN 2\n";
 	for(i=1;i<=NUM_PARAM;i++) {
 		str >> C[i];
-      cout << C;
-      cout << "\n";
+      //cout << "C burh\n";
+      //cout << C[i];
+      //cout << "\n";
 	}
 
 	 str >> GRID_CONST >> NGRID_BF_STEADY ;
     
-    cout << "GRID_CONST?\n";
-    cout << str;
+    //cout << "\nGRID_CONST\n";
+    //cout << GRID_CONST;
+    cout << "\nNGRID_BF_STEADY\n";
+    cout << NGRID_BF_STEADY;
     cout << "\n";
     
 	// output string memory allocation
@@ -263,9 +275,9 @@ bool  MC_not_finished(std::stringstream& STR_OUTPUT)
       cout << "SAY\n";
       cout << "INDEX GRID\n";
       cout << INDEX_GRID;
-      cout << "\nGRID_CONST\n";
-      cout << GRID_CONST;
-      cout << "\n";
+      //cout << "\nGRID_CONST\n";
+      //cout << GRID_CONST;
+      //cout << "\n";
 		STR_OUTPUT <<  INDEX_GRID*GRID_CONST << " ";
       cout << "SO\n";
 		for(i=1;i<=NUM_SPEC;i++){

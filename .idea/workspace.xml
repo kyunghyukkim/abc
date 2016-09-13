@@ -6,14 +6,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ba22a62d-7ff7-44b8-bf6f-9a1530b2729d" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/c-code/TestC.o" afterPath="$PROJECT_DIR$/c-code/TestC.o" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Testfoo.so" afterPath="$PROJECT_DIR$/Testfoo.so" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/c-code/Testfoo.so" afterPath="$PROJECT_DIR$/c-code/Testfoo.so" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/libfoo.so" afterPath="$PROJECT_DIR$/libfoo.so" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/c-code/libfoo.so" afterPath="$PROJECT_DIR$/c-code/libfoo.so" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/c-code/one_trajectory.o" afterPath="$PROJECT_DIR$/c-code/one_trajectory.o" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/c-code/TestC.cpp" afterPath="$PROJECT_DIR$/c-code/TestC.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/TestPyCC.py" afterPath="$PROJECT_DIR$/TestPyCC.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/c-code/one_trajectory.cpp" afterPath="$PROJECT_DIR$/c-code/one_trajectory.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
