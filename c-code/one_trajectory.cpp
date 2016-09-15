@@ -127,6 +127,15 @@ void model_def(char *str_c, std::stringstream& STR_OUTPUT)
    cout << "str STREAMED\n";
    cout << str.str();
    cout << "\n";
+   
+   cout << "DOUBLE DOWN\n";
+   
+   //double Test = 2.2;
+   
+   cout << "DOUBLE UP\n";
+   
+   //cout << Test;
+   //cout << "\n";
 
 	NUM_SPEC=3;
 	NUM_SPEC2=NUM_SPEC*NUM_SPEC;
@@ -142,7 +151,11 @@ void model_def(char *str_c, std::stringstream& STR_OUTPUT)
    C=(double *)calloc(NUM_PARAM+1, sizeof(double));
 	counterS=(long **)calloc(NUM_SPEC+1, sizeof(long *));
 	SMAX=(long *)calloc(NUM_SPEC+1, sizeof(long));
-
+   
+   //cout << "Expect Failure\n";
+   //cout << aveS[1];
+   //cout << "\n";
+   
    cout << "INIT_S\n";
    cout << INIT_S;
    cout << "\n";
@@ -275,10 +288,36 @@ bool  MC_not_finished(std::stringstream& STR_OUTPUT)
       cout << "SAY\n";
       cout << "INDEX GRID\n";
       cout << INDEX_GRID;
-      //cout << "\nGRID_CONST\n";
+      cout << "\n";
+      //cout << "GRID_CONST\n";
       //cout << GRID_CONST;
       //cout << "\n";
-		STR_OUTPUT <<  INDEX_GRID*GRID_CONST << " ";
+		
+      cout << "Can I do numbers?\n";
+      long INBETWEEN = INDEX_GRID*GRID_CONST;
+      double DOUBLEINBETWEEN = INDEX_GRID*GRID_CONST;
+      cout << "NOW THE SIN\n";
+      cout << INBETWEEN;
+      cout << "\n";
+      
+      cout << "Can I do Strings\n";
+      cout << "INDEX_GRID\n";
+      cout << INDEX_GRID << " ";
+      cout << "\n";
+      //cout << "GRID_CONST\n";
+      //cout << GRID_CONST << " ";
+      //cout << "\n";
+      
+      cout << "Can I do String Stream?\n";
+      cout << "INDEX_GRID\n";
+      STR_OUTPUT << INDEX_GRID << " ";
+      cout << "\n";
+      cout << "GRID_CONST\n";
+      STR_OUTPUT << GRID_CONST;
+      cout << "\n";
+
+      
+      //STR_OUTPUT <<  INDEX_GRID*GRID_CONST << " ";
       cout << "SO\n";
 		for(i=1;i<=NUM_SPEC;i++){
 			STR_OUTPUT << S[i] << " ";
