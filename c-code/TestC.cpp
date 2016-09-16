@@ -1,5 +1,9 @@
 #include <stdio.h>
 #include<iostream>
+// setprecision example
+#include <iostream>     // std::cout, std::fixed
+#include <iomanip>      // std::setprecision
+
 using namespace std;
 
 extern "C" {
@@ -29,6 +33,19 @@ char * TestStr(char *str)
    // cout << "Hello World!";
    
    char * test;
-   test = "Hello char string";
+   test = "Hello char string\n";
+   
+   cout << test;
+   
+   float Intest = 3.141579;
+   
+   std::cout << std::setprecision(5) << Intest << '\n';
+   
+   cout << Intest;
+   cout << "\n";
+   cout << Intest << endl;
+   cout << "\n";
+   
+   
    return test;
 }
