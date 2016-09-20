@@ -89,7 +89,7 @@ char * gillespie(char *str)
    cout << "\n";
    
    model_def(str, STR_OUTPUT);
-	//time_evol(STR_OUTPUT);
+	time_evol(STR_OUTPUT);
 
    const std::string& tmp = STR_OUTPUT.str();
    cout << "tmp\n";
@@ -243,6 +243,127 @@ void propensity(void)
 	v[4]=C[4]*S[3];
 }
 
+void time_evol(std::stringstream& STR_OUTPUT)
+{
+	
+   cout << "TIME START\n";
+   
+	init_genrand(time(NULL)+genrand_int32());
+   
+   cout << "Geriatric\n";
+   
+	init_state();
+   
+   cout << "State\n";		
+
+	//STR_OUTPUT << std::endl;	
+	//STR_OUTPUT << "Time" << " ";
+	//for (i=1;i<=NUM_SPEC;i++){
+	//	STR_OUTPUT << "S" <<i<< " ";
+	//}
+	//STR_OUTPUT << std::endl;
+   
+	while(INDEX_GRID < NGRID_BF_STEADY )  MC_not_finished(STR_OUTPUT);
+   
+   cout << "TIME\n";
+}
+
+bool  MC_not_finished(std::stringstream& STR_OUTPUT)
+{
+	//double svmoo[NUM_REACT];
+   double* svmoo = new double[NUM_REACT];
+	double sum_rate=0;
+	double rand;
+	int index;
+	int i;
+   
+   cout << "Going to Propensity\n";
+
+	propensity();
+	for(i=1;i<=NUM_REACT;i++) sum_rate+=v[i];
+
+   cout << "Propensity For-d\n";
+
+	if(sum_rate!=0) {
+	   DELT=-log(genrand_real3())/sum_rate;
+		for(i=1;i<=NUM_REACT;i++) svmoo[i]=v[i]/sum_rate;
+	}
+
+   cout << "IF?\n";
+   
+	//if reaction finishes, then new DELT is going to be the last DELT just before reaction finishes.
+	TIME+=DELT;
+   cout << "YOU\n";
+   
+   while(TIME>INDEX_GRID*GRID_CONST) {
+      cout << "SAY\n";
+      cout << "INDEX GRID\n";
+      cout << INDEX_GRID;
+      cout << "\n";
+      //cout << "GRID_CONST\n";
+      //cout << GRID_CONST;
+      //cout << "\n";
+		
+      cout << "Can I do numbers?\n";
+      long INBETWEEN = INDEX_GRID*GRID_CONST;
+      double DOUBLEINBETWEEN = INDEX_GRID*GRID_CONST;
+      cout << "NOW THE SIN\n";
+      cout << INBETWEEN;
+      cout << "\n";
+      
+      cout << "Can I do Strings\n";
+      cout << "INDEX_GRID\n";
+      cout << INDEX_GRID << " ";
+      cout << "\n";
+      //cout << "GRID_CONST\n";
+      //cout << GRID_CONST << " ";
+      //cout << "\n";
+      
+      cout << "Can I do String Stream?\n";
+      cout << "INDEX_GRID\n";
+      STR_OUTPUT << INDEX_GRID << " ";
+      cout << "\n";
+      cout << "GRID_CONST\n";
+      STR_OUTPUT << GRID_CONST;
+      cout << "\n";
+
+      
+      //STR_OUTPUT <<  INDEX_GRID*GRID_CONST << " ";
+      cout << "SO\n";
+		for(i=1;i<=NUM_SPEC;i++){
+			STR_OUTPUT << S[i] << " ";
+		}
+		cout << "FUCK\n";
+		STR_OUTPUT << std::endl;
+		cout << S[1];
+		if(++INDEX_GRID>NGRID_BF_STEADY) return 0;
+	}
+   
+   //If reaction is not finished, do update. otherwise leave it unchanged.
+	rand=genrand_real3();
+	if(sum_rate!=0){
+		index=determine_reaction(svmoo, rand);
+		for(i=1;i<=NUM_SPEC;i++) {
+			S[i]+=stoimoo[i][index];
+		}
+	}
+	return 1;  //Enzymatic reactions are not finished.
+
+}
+
+
+int determine_reaction(double *sv, double rand)
+{
+	int i;
+	double  sum_sv=0;
+	for(i=1;i<=NUM_REACT;i++){
+		sum_sv+=sv[i];
+		if(rand<sum_sv) return i;
+	}
+	printf("Something wrong with SSA code");
+	exit(-1);
+}
+
 
 
 void resize_s_counter(int index, int new_SMAX)
@@ -261,4 +382,15 @@ void resize_s_counter(int index, int new_SMAX)
 	m[SMAX[index]]=1;
 	free(counterS[index]);
 	counterS[index]=m;
+}
+
+
+	
+void init_state(void)
+{
+	int i;
+	for(i=1;i<=NUM_SPEC;i++) S[i]=INIT_S[i];
+	TIME=0;
+	DELT=0;
+	INDEX_GRID=0;
 }
