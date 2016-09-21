@@ -33,7 +33,7 @@ double  *sumS, *sumS2;
 long **counterS;
 double *v;
 
-int **stoimoo;
+int **stoi;
 int N;
 
 int NUM_SPEC;
@@ -60,10 +60,14 @@ bool  MC_not_finished(std::stringstream& str);
 // std::ofstream FILE_TEVOL;
 // std::ofstream FILE_FLUX;
 
+
+
+
+
+
 char * gillespie(char *str)
-{   
-   
-   cout << "str\n";
+{
+	cout << "str\n";
    cout << str;
    cout << "\n";
    cout << "*str\n";
@@ -71,23 +75,23 @@ char * gillespie(char *str)
    cout << "\n";
    
    std::stringstream STR_OUTPUT;
-   
-   //cout << "STR_OUTPUT\n";
-   //cout << STR_OUTPUT;
-   //cout << "\n";
+	
+   cout << "STR_OUTPUT\n";
+   cout << STR_OUTPUT;
+   cout << "\n";
    cout << "str before\n";
    cout << str;
    cout << "\n";
    
-   model_def(str, STR_OUTPUT);
+	model_def(str, STR_OUTPUT);
 	time_evol(STR_OUTPUT);
-
-   const std::string& tmp = STR_OUTPUT.str();
+	
+	const std::string& tmp = STR_OUTPUT.str();
    cout << "tmp\n";
    cout << tmp;
    cout << "\n";
-
-   STR_OUTPUT.str("");
+   
+	STR_OUTPUT.str("");
 	STR_OUTPUT.clear();
 	
 	const char* cstr = tmp.c_str();
@@ -95,8 +99,8 @@ char * gillespie(char *str)
    cout << "cstr\n";
    cout << cstr;
    cout << "\n";
-   
-   int i=0;
+
+	int i=0;
 	char * cstr2 = static_cast<char *>(malloc(strlen(cstr) * sizeof(char)));
 	while (cstr[i]){
 		cstr2[i] = cstr[i];
@@ -105,15 +109,14 @@ char * gillespie(char *str)
    cout << "Hello You!\n";
    cout << cstr2;
    cout << "\n";
-
-   return cstr2;
-   
+	return cstr2;
+	//return cstr;
 }
 
+	
 void model_def(char *str_c, std::stringstream& STR_OUTPUT)
 {
-	
-   int i,j ;
+	int i,j ;
 	
    cout << "str_c\n";
    cout << str_c;
@@ -148,7 +151,7 @@ void model_def(char *str_c, std::stringstream& STR_OUTPUT)
    C=(double *)calloc(NUM_PARAM+1, sizeof(double));
 	counterS=(long **)calloc(NUM_SPEC+1, sizeof(long *));
 	SMAX=(long *)calloc(NUM_SPEC+1, sizeof(long));
-
+   
    //cout << "Expect Failure\n";
    //cout << aveS[1];
    //cout << "\n";
@@ -162,8 +165,7 @@ void model_def(char *str_c, std::stringstream& STR_OUTPUT)
    cout << "\n";
 
    cout << "STREAMING IN 1\n";
-
-   for(i=1;i<=NUM_SPEC;i++) {
+	for(i=1;i<=NUM_SPEC;i++) {
 		str >> INIT_S[i];
       cout << "INIT_S burh\n";
       cout << INIT_S[i];
@@ -178,51 +180,48 @@ void model_def(char *str_c, std::stringstream& STR_OUTPUT)
       //cout << "\n";
 	}
 
-   str >> GRID_CONST >> NGRID_BF_STEADY ;
-   
-   //cout << "\nGRID_CONST\n";
-   //cout << GRID_CONST;
-   cout << "\nNGRID_BF_STEADY\n";
-   cout << NGRID_BF_STEADY;
-   cout << "\n";
-   
-   // output string memory allocation
+	 str >> GRID_CONST >> NGRID_BF_STEADY ;
+    
+    //cout << "\nGRID_CONST\n";
+    //cout << GRID_CONST;
+    cout << "\nNGRID_BF_STEADY\n";
+    cout << NGRID_BF_STEADY;
+    cout << "\n";
+    
+	// output string memory allocation
 	// time and S1 with NGRID_BF_STEADY items. 
 	
 	for(i=1;i<=NUM_SPEC;i++){
 		SMAX[i]=INIT_S[i];
 		counterS[i]=(long *) calloc( SMAX[i]+1, sizeof(long));
-		if(SMAX[i]<S[i]){
-         resize_s_counter(i, S[i]);
-      }
+		if(SMAX[i]<S[i]) resize_s_counter(i, S[i]);
 	}
-   
-   //	propensity function
+	//	propensity function
 	v=(double *)calloc(NUM_REACT+1, sizeof(double));
-   
-   //	Stoichiometry matrix
-   stoimoo=(int **)calloc(NUM_SPEC+1, sizeof(int *));
-   for(i=1;i<=NUM_SPEC;i++) 
-		stoimoo[i]=(int *)calloc(NUM_REACT+1, sizeof(int));
 
-	for(i=1;i<=NUM_SPEC;i++)for(j=1;j<=NUM_REACT;j++) stoimoo[i][j]=0;
+	//	Stoichiometry matrix
+	stoi=(int **)calloc(NUM_SPEC+1, sizeof(int *));
+	for(i=1;i<=NUM_SPEC;i++) 
+		stoi[i]=(int *)calloc(NUM_REACT+1, sizeof(int));
+
+	for(i=1;i<=NUM_SPEC;i++)for(j=1;j<=NUM_REACT;j++) stoi[i][j]=0;
 
 
 	propensity();
 
-	stoimoo[1][1]=1;
-	stoimoo[1][2]=-1;
-	stoimoo[1][3]=-1;
-	stoimoo[1][4]=1;
+	stoi[1][1]=1;
+	stoi[1][2]=-1;
+	stoi[1][3]=-1;
+	stoi[1][4]=1;
 
-	stoimoo[2][3]=-1;
-	stoimoo[2][4]=1;
-	stoimoo[3][3]=1;
-	stoimoo[3][4]=-1;
-
+	stoi[2][3]=-1;
+	stoi[2][4]=1;
+	stoi[3][3]=1;
+	stoi[3][4]=-1;
    
    cout << "MODEL\n";
-   
+
+
 
 }
 
@@ -233,6 +232,8 @@ void propensity(void)
 	v[3]=C[3]*S[1]*S[2];
 	v[4]=C[4]*S[3];
 }
+
+
 
 void time_evol(std::stringstream& STR_OUTPUT)
 {
@@ -252,8 +253,7 @@ void time_evol(std::stringstream& STR_OUTPUT)
 	//for (i=1;i<=NUM_SPEC;i++){
 	//	STR_OUTPUT << "S" <<i<< " ";
 	//}
-	//STR_OUTPUT << std::endl;
-   
+	//STR_OUTPUT << std::endl;	
 	while(INDEX_GRID < NGRID_BF_STEADY )  MC_not_finished(STR_OUTPUT);
    
    cout << "TIME\n";
@@ -261,13 +261,12 @@ void time_evol(std::stringstream& STR_OUTPUT)
 
 bool  MC_not_finished(std::stringstream& STR_OUTPUT)
 {
-	//double svmoo[NUM_REACT];
-   double* svmoo = new double[NUM_REACT];
+	double sv[NUM_REACT];
 	double sum_rate=0;
 	double rand;
 	int index;
 	int i;
-   
+
    cout << "Going to Propensity\n";
 
 	propensity();
@@ -276,17 +275,16 @@ bool  MC_not_finished(std::stringstream& STR_OUTPUT)
    cout << "Propensity For-d\n";
 
 	if(sum_rate!=0) {
-	   DELT=-log(genrand_real3())/sum_rate;
-		for(i=1;i<=NUM_REACT;i++) svmoo[i]=v[i]/sum_rate;
+		DELT=-log(genrand_real3())/sum_rate;
+		for(i=1;i<=NUM_REACT;i++) sv[i]=v[i]/sum_rate;
 	}
-
+   
    cout << "IF?\n";
    
 	//if reaction finishes, then new DELT is going to be the last DELT just before reaction finishes.
 	TIME+=DELT;
    cout << "YOU\n";
-   
-   while(TIME>INDEX_GRID*GRID_CONST) {
+	while(TIME>INDEX_GRID*GRID_CONST) {
       cout << "SAY\n";
       cout << "INDEX GRID\n";
       cout << INDEX_GRID;
@@ -329,18 +327,18 @@ bool  MC_not_finished(std::stringstream& STR_OUTPUT)
 		cout << S[1];
 		if(++INDEX_GRID>NGRID_BF_STEADY) return 0;
 	}
-   
-   //If reaction is not finished, do update. otherwise leave it unchanged.
+
+	//If reaction is not finished, do update. otherwise leave it unchanged.
 	rand=genrand_real3();
 	if(sum_rate!=0){
-		index=determine_reaction(svmoo, rand);
+		index=determine_reaction(sv, rand);
 		for(i=1;i<=NUM_SPEC;i++) {
-			S[i]+=stoimoo[i][index];
+			S[i]+=stoi[i][index];
 		}
 	}
 	return 1;  //Enzymatic reactions are not finished.
-
 }
+
 
 
 int determine_reaction(double *sv, double rand)
@@ -385,3 +383,4 @@ void init_state(void)
 	DELT=0;
 	INDEX_GRID=0;
 }
+
