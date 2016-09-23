@@ -106,19 +106,22 @@ def CumulativeDistribution(pThetp):
 # this function is to act over, the number of samples you would like, the type of evnelope you want to use
 # and the variance of the Normal distribution should you want it. It produces N number of samples that
 # are accepted into the pThetp function.
-def RejectionSampling(type = 'Box', var = 1, center = -666):
+def RejectionSampling(type = 'Box', var = 1, center = -666.666):
 
     range = [-2, 2]
 
-    N = 40
+    N = 1000
+
+    #def pThetp(x):
+    #    if ((x > -1) & (x < 1)):
+    #        return 1
+    #    else:
+    #        return 0
 
     def pThetp(x):
-        if ((x > -1) & (x < 1)):
-            return 1
-        else:
-            return 0
+        return numpy.exp(-numpy.power(x - 0, 2.) / (2 * numpy.power(1, 2.)))
 
-    if (center == -666):
+    if (center == -666.666):
         center = numpy.mean(range)
 
     index = 1
@@ -181,6 +184,11 @@ def RejectionSampling(type = 'Box', var = 1, center = -666):
 
         print "Unrecognized Type: Options Currently available are \"Box\" and \"Normal\"."
         success = -1
+
+    print "results"
+    resultsMoo = numpy.histogram(success, bins = 15)
+
+    print resultsMoo
 
     return success
 
