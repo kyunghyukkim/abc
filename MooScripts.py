@@ -51,7 +51,9 @@ def Kpert(t, N, sigj, pThet, pThetp):
 def PerturbationKernel(particles):
 
     rowCount = particles.shape[1]
-    colCount = particles.shape[2]
+    print rowCount
+    #colCount = particles.shape[2]
+    #CovarPrep = pandas.DataFrame()
     means = []
     index = 1
     while index < rowCount:
@@ -60,6 +62,7 @@ def PerturbationKernel(particles):
         subjectParam = particles.loc(label)
         numpy.append(means, numpy.mean(subjectParam))
         CovarPrep = pandas.DataFrame([CovarPrep,subjectParam])
+        #CovarPrep['Columnname'] = subjectParam
     Covar = numpy.cov(CovarPrep)
 
     results = numpy.random.multivariate_normal(means, Covar)
@@ -108,9 +111,9 @@ def CumulativeDistribution(pThetp):
 # are accepted into the pThetp function.
 def RejectionSampling(type = 'Box', var = 1, center = -666.666):
 
-    range = [-2, 2]
+    range = [-20, 20]
 
-    N = 1000
+    N = 10000
 
     #def pThetp(x):
     #    if ((x > -1) & (x < 1)):
@@ -119,7 +122,7 @@ def RejectionSampling(type = 'Box', var = 1, center = -666.666):
     #        return 0
 
     def pThetp(x):
-        return numpy.exp(-numpy.power(x - 0, 2.) / (2 * numpy.power(1, 2.)))
+        return numpy.exp(-numpy.power(x + 3, 2.) / (2 * numpy.power(3, 2.)))
 
     if (center == -666.666):
         center = numpy.mean(range)
@@ -190,5 +193,31 @@ def RejectionSampling(type = 'Box', var = 1, center = -666.666):
 
     print resultsMoo
 
+    numpy.savetxt("var2.csv", success, delimiter=",")
+
     return success
+
+
+# From Main for Testing
+def input_to_df(input_str, N_Species, N_param):
+    input_list = map(float, input_str.split(' '))
+    theta_index_name = []
+    for x in range(0, N_param):
+        theta_index_name.append('theta' + str(x))
+    Sinit_index_name = []
+    for x in range(0, N_Species):
+        Sinit_index_name.append('S' + str(x))
+
+    Sinit = pandas.DataFrame(map(int, input_list[0:N_Species]), index = Sinit_index_name, dtype='object')
+    print "Initial Species copy numbers used in the simulation algorithm\n", Sinit
+
+    theta = pandas.DataFrame(input_list[N_Species:N_Species + N_param], index = theta_index_name, dtype='object')
+    print "Initial theta values\n", theta
+
+    t_param = pandas.DataFrame(map(float, [input_list[N_Species + N_param]]), index = ['delt'], dtype='object')
+    t_param.loc['N_time']=map(int, [input_list[N_Species + N_param+1]])
+    print "Simulation time parameters\n", t_param
+    dict = {'Sinit': Sinit, 'theta': theta, 't_param': t_param}
+    df = pandas.concat(dict)
+    return df
 
