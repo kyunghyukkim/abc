@@ -48,28 +48,68 @@ def Kpert(t, N, sigj, pThet, pThetp):
         product = product * bit
     return product
 
-def PerturbationKernel(particles):
+def PerturbationKernel(particles, N):
 
-    rowCount = particles.shape[1]
+    print "Analyzing input type..."
+    print type(particles)
+
+    print "ViewingParticles..."
+    print particles
+
+    print "Extraction..."
+    ThetaSet = particles.loc['theta']
+
+    print "Viewing ThetaSet..."
+    print ThetaSet
+    print "Analyzing Dimensions..."
+    rowCount = ThetaSet.shape[0]
+    colCount = ThetaSet.shape[1]
+    print "Viewing rowCount..."
     print rowCount
-    #colCount = particles.shape[2]
-    #CovarPrep = pandas.DataFrame()
+    print colCount
     means = []
-    index = 1
+    index = 0
     while index < rowCount:
-        label = "theta"
-        label += (index - 1)
-        subjectParam = particles.loc(label)
-        numpy.append(means, numpy.mean(subjectParam))
-        CovarPrep = pandas.DataFrame([CovarPrep,subjectParam])
-        #CovarPrep['Columnname'] = subjectParam
-    Covar = numpy.cov(CovarPrep)
+        subjectParam = ThetaSet.iloc[[index]]
+        print "Viewing subjectParam..."
+        print subjectParam
 
-    results = numpy.random.multivariate_normal(means, Covar)
+        print "Appending Means..."
+        currentMean = numpy.mean(subjectParam.as_matrix())
+        print currentMean
+        means = numpy.append(means, currentMean)
+        print "Viewing Means..."
+        print means
 
+        print "Increment"
+        index += 1
+    print "Final Index..."
+    print index
+    print "Expected Index..."
+    print rowCount
+        #CovarPrep = pandas.DataFrame([CovarPrep,subjectParam])
+        #print "Building Covars..."
+        #CovarPrep[label] = subjectParam
+    print "Building Covars..."
+    Covar = numpy.cov(ThetaSet)
+    print "Viewing Covars..."
+    print Covar
+
+    print "Generating Results..."
+    windex = 0
+    results = pandas.DataFrame()
+    while windex < N:
+
+        result = numpy.random.multivariate_normal(means, Covar)
+        results[windex] = result
+        windex += 1
+
+    print "Viewing Results..."
+    print results
+
+
+    print "Exiting Perturbation"
     return results
-
-
 
 # sigmaj produces the deviation for the Kpert function from the various statistical
 # properties of the system. It takes past distributions and the index you are currently

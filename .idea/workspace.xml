@@ -6,10 +6,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ba22a62d-7ff7-44b8-bf6f-9a1530b2729d" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/MooMain.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/MooMain" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/MooMain.py" afterPath="$PROJECT_DIR$/MooMain.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/MooScripts.py" afterPath="$PROJECT_DIR$/MooScripts.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="abc.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -33,7 +31,7 @@
       <file leaf-file-name="main.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-9.03125">
+            <state vertical-scroll-proportion="0.0">
               <caret line="76" column="0" selection-start-line="76" selection-start-column="0" selection-end-line="76" selection-end-column="79" />
               <folding>
                 <element signature="e#0#24#0" expanded="true" />
@@ -43,11 +41,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MooMain.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="MooMain.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/MooMain.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.15246637">
-              <caret line="8" column="42" selection-start-line="8" selection-start-column="42" selection-end-line="8" selection-end-column="42" />
+            <state vertical-scroll-proportion="-5.037037">
+              <caret line="8" column="45" selection-start-line="8" selection-start-column="45" selection-end-line="8" selection-end-column="45" />
               <folding>
                 <element signature="e#27#51#0" expanded="true" />
               </folding>
@@ -58,7 +56,7 @@
       <file leaf-file-name="gillespie.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/gillespie.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-15.111111">
+            <state vertical-scroll-proportion="0.0">
               <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
               <folding />
             </state>
@@ -68,7 +66,7 @@
       <file leaf-file-name="gillespieWin.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/gillespieWin.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-28.0">
+            <state vertical-scroll-proportion="0.0">
               <caret line="46" column="21" selection-start-line="46" selection-start-column="21" selection-end-line="46" selection-end-column="21" />
               <folding />
             </state>
@@ -85,18 +83,18 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MooScripts.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="MooScripts.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/MooScripts.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-9.410714">
-              <caret line="54" column="5" selection-start-line="54" selection-start-column="5" selection-end-line="54" selection-end-column="5" />
+            <state vertical-scroll-proportion="0.3328336">
+              <caret line="72" column="29" selection-start-line="72" selection-start-column="28" selection-end-line="72" selection-end-column="29" />
               <folding>
                 <element signature="e#45#57#0" expanded="true" />
                 <element signature="e#400#630#0" expanded="false" />
-                <element signature="e#974#1199#0" expanded="false" />
-                <element signature="e#1538#1718#0" expanded="false" />
-                <element signature="e#2580#2908#0" expanded="false" />
-                <element signature="e#3145#3643#0" expanded="false" />
+                <element signature="e#3535#3863#0" expanded="false" />
+                <element signature="e#4100#4598#0" expanded="false" />
+                <element signature="e#5034#7322#0" expanded="false" />
+                <element signature="e#7401#8349#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -105,8 +103,8 @@
       <file leaf-file-name="KimScripts.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/KimScripts.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-24.222221">
-              <caret line="68" column="0" selection-start-line="68" selection-start-column="0" selection-end-line="68" selection-end-column="0" />
+            <state vertical-scroll-proportion="-21.777779">
+              <caret line="93" column="0" selection-start-line="93" selection-start-column="0" selection-end-line="93" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -134,9 +132,9 @@
         <option value="$PROJECT_DIR$/gillespieWin.py" />
         <option value="$PROJECT_DIR$/TestPyCC.py" />
         <option value="$PROJECT_DIR$/KimScripts.py" />
-        <option value="$PROJECT_DIR$/MooScripts.py" />
         <option value="$PROJECT_DIR$/MooMain" />
         <option value="$PROJECT_DIR$/MooMain.py" />
+        <option value="$PROJECT_DIR$/MooScripts.py" />
       </list>
     </option>
   </component>
@@ -144,10 +142,9 @@
     <order />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-8" />
-    <option name="y" value="-8" />
-    <option name="width" value="1936" />
-    <option name="height" value="1056" />
+    <option name="x" value="1" />
+    <option name="width" value="1598" />
+    <option name="height" value="860" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <OptionsSetting value="true" id="Add" />
@@ -196,6 +193,7 @@
     <property name="recentsLimit" value="5" />
     <property name="SearchEverywhereHistoryKey" value="&#9;FILE&#9;file:///Users/kkim/PycharmProjects/abc/KimScripts.py" />
     <property name="FullScreen" value="false" />
+    <property name="full.screen.before.presentation.mode" value="false" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -403,7 +401,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="1" y="0" width="1598" height="860" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.123125" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -412,18 +410,18 @@
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32954547" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32893" sideWeight="0.4913295" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3650568" sideWeight="0.490625" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3650568" sideWeight="0.490625" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -464,10 +462,10 @@
           <folding>
             <element signature="e#45#57#0" expanded="true" />
             <element signature="e#400#630#0" expanded="false" />
-            <element signature="e#974#1199#0" expanded="false" />
-            <element signature="e#1538#1718#0" expanded="false" />
-            <element signature="e#2580#2908#0" expanded="false" />
-            <element signature="e#3145#3643#0" expanded="false" />
+            <element signature="e#3535#3863#0" expanded="false" />
+            <element signature="e#4100#4598#0" expanded="false" />
+            <element signature="e#5034#7322#0" expanded="false" />
+            <element signature="e#7401#8349#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -505,10 +503,10 @@
           <folding>
             <element signature="e#45#57#0" expanded="true" />
             <element signature="e#400#630#0" expanded="false" />
-            <element signature="e#974#1199#0" expanded="false" />
-            <element signature="e#1538#1718#0" expanded="false" />
-            <element signature="e#2580#2908#0" expanded="false" />
-            <element signature="e#3145#3643#0" expanded="false" />
+            <element signature="e#3535#3863#0" expanded="false" />
+            <element signature="e#4100#4598#0" expanded="false" />
+            <element signature="e#5034#7322#0" expanded="false" />
+            <element signature="e#7401#8349#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -553,10 +551,10 @@
           <folding>
             <element signature="e#45#57#0" expanded="true" />
             <element signature="e#400#630#0" expanded="false" />
-            <element signature="e#974#1199#0" expanded="false" />
-            <element signature="e#1538#1718#0" expanded="false" />
-            <element signature="e#2580#2908#0" expanded="false" />
-            <element signature="e#3145#3643#0" expanded="false" />
+            <element signature="e#3535#3863#0" expanded="false" />
+            <element signature="e#4100#4598#0" expanded="false" />
+            <element signature="e#5034#7322#0" expanded="false" />
+            <element signature="e#7401#8349#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -594,10 +592,10 @@
           <folding>
             <element signature="e#45#57#0" expanded="true" />
             <element signature="e#400#630#0" expanded="false" />
-            <element signature="e#974#1199#0" expanded="false" />
-            <element signature="e#1538#1718#0" expanded="false" />
-            <element signature="e#2580#2908#0" expanded="false" />
-            <element signature="e#3145#3643#0" expanded="false" />
+            <element signature="e#3535#3863#0" expanded="false" />
+            <element signature="e#4100#4598#0" expanded="false" />
+            <element signature="e#5034#7322#0" expanded="false" />
+            <element signature="e#7401#8349#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -635,10 +633,10 @@
           <folding>
             <element signature="e#45#57#0" expanded="true" />
             <element signature="e#400#630#0" expanded="false" />
-            <element signature="e#974#1199#0" expanded="false" />
-            <element signature="e#1538#1718#0" expanded="false" />
-            <element signature="e#2580#2908#0" expanded="false" />
-            <element signature="e#3145#3643#0" expanded="false" />
+            <element signature="e#3535#3863#0" expanded="false" />
+            <element signature="e#4100#4598#0" expanded="false" />
+            <element signature="e#5034#7322#0" expanded="false" />
+            <element signature="e#7401#8349#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -676,10 +674,10 @@
           <folding>
             <element signature="e#45#57#0" expanded="true" />
             <element signature="e#400#630#0" expanded="false" />
-            <element signature="e#974#1199#0" expanded="false" />
-            <element signature="e#1538#1718#0" expanded="false" />
-            <element signature="e#2580#2908#0" expanded="false" />
-            <element signature="e#3145#3643#0" expanded="false" />
+            <element signature="e#3535#3863#0" expanded="false" />
+            <element signature="e#4100#4598#0" expanded="false" />
+            <element signature="e#5034#7322#0" expanded="false" />
+            <element signature="e#7401#8349#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -717,10 +715,10 @@
           <folding>
             <element signature="e#45#57#0" expanded="true" />
             <element signature="e#400#630#0" expanded="false" />
-            <element signature="e#974#1199#0" expanded="false" />
-            <element signature="e#1538#1718#0" expanded="false" />
-            <element signature="e#2580#2908#0" expanded="false" />
-            <element signature="e#3145#3643#0" expanded="false" />
+            <element signature="e#3535#3863#0" expanded="false" />
+            <element signature="e#4100#4598#0" expanded="false" />
+            <element signature="e#5034#7322#0" expanded="false" />
+            <element signature="e#7401#8349#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -758,10 +756,10 @@
           <folding>
             <element signature="e#45#57#0" expanded="true" />
             <element signature="e#400#630#0" expanded="false" />
-            <element signature="e#974#1199#0" expanded="false" />
-            <element signature="e#1538#1718#0" expanded="false" />
-            <element signature="e#2580#2908#0" expanded="false" />
-            <element signature="e#3145#3643#0" expanded="false" />
+            <element signature="e#3535#3863#0" expanded="false" />
+            <element signature="e#4100#4598#0" expanded="false" />
+            <element signature="e#5034#7322#0" expanded="false" />
+            <element signature="e#7401#8349#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -791,10 +789,10 @@
           <folding>
             <element signature="e#45#57#0" expanded="true" />
             <element signature="e#400#630#0" expanded="false" />
-            <element signature="e#974#1199#0" expanded="false" />
-            <element signature="e#1538#1718#0" expanded="false" />
-            <element signature="e#2580#2908#0" expanded="false" />
-            <element signature="e#3145#3643#0" expanded="false" />
+            <element signature="e#3535#3863#0" expanded="false" />
+            <element signature="e#4100#4598#0" expanded="false" />
+            <element signature="e#5034#7322#0" expanded="false" />
+            <element signature="e#7401#8349#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -864,6 +862,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/MooMain">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="6" selection-end-column="42" />
+          <folding>
+            <element signature="e#0#24#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/TestPyCC.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -874,7 +882,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/gillespieWin.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-28.0">
+        <state vertical-scroll-proportion="0.0">
           <caret line="46" column="21" selection-start-line="46" selection-start-column="21" selection-end-line="46" selection-end-column="21" />
           <folding />
         </state>
@@ -882,48 +890,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/gillespie.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-15.111111">
+        <state vertical-scroll-proportion="0.0">
           <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/KimScripts.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-24.222221">
-          <caret line="68" column="0" selection-start-line="68" selection-start-column="0" selection-end-line="68" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MooScripts.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-9.410714">
-          <caret line="54" column="5" selection-start-line="54" selection-start-column="5" selection-end-line="54" selection-end-column="5" />
-          <folding>
-            <element signature="e#45#57#0" expanded="true" />
-            <element signature="e#400#630#0" expanded="false" />
-            <element signature="e#974#1199#0" expanded="false" />
-            <element signature="e#1538#1718#0" expanded="false" />
-            <element signature="e#2580#2908#0" expanded="false" />
-            <element signature="e#3145#3643#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MooMain">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="6" selection-end-column="42" />
-          <folding>
-            <element signature="e#0#24#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-9.03125">
+        <state vertical-scroll-proportion="0.0">
           <caret line="76" column="0" selection-start-line="76" selection-start-column="0" selection-end-line="76" selection-end-column="79" />
           <folding>
             <element signature="e#0#24#0" expanded="true" />
@@ -932,12 +907,35 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/KimScripts.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-21.777779">
+          <caret line="93" column="0" selection-start-line="93" selection-start-column="0" selection-end-line="93" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/MooMain.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.15246637">
-          <caret line="8" column="42" selection-start-line="8" selection-start-column="42" selection-end-line="8" selection-end-column="42" />
+        <state vertical-scroll-proportion="-5.037037">
+          <caret line="8" column="45" selection-start-line="8" selection-start-column="45" selection-end-line="8" selection-end-column="45" />
           <folding>
             <element signature="e#27#51#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MooScripts.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.3328336">
+          <caret line="72" column="29" selection-start-line="72" selection-start-column="28" selection-end-line="72" selection-end-column="29" />
+          <folding>
+            <element signature="e#45#57#0" expanded="true" />
+            <element signature="e#400#630#0" expanded="false" />
+            <element signature="e#3535#3863#0" expanded="false" />
+            <element signature="e#4100#4598#0" expanded="false" />
+            <element signature="e#5034#7322#0" expanded="false" />
+            <element signature="e#7401#8349#0" expanded="false" />
           </folding>
         </state>
       </provider>
