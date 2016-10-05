@@ -5,10 +5,7 @@
     <option name="CUSTOM_SCOPE_NAME" value="Current File" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ba22a62d-7ff7-44b8-bf6f-9a1530b2729d" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/MooMain.py" afterPath="$PROJECT_DIR$/MooMain.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/MooScripts.py" afterPath="$PROJECT_DIR$/MooScripts.py" />
-    </list>
+    <list default="true" id="ba22a62d-7ff7-44b8-bf6f-9a1530b2729d" name="Default" comment="" />
     <ignored path="abc.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -28,10 +25,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="main.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="main.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
+            <state vertical-scroll-proportion="0.023578363">
               <caret line="76" column="0" selection-start-line="76" selection-start-column="0" selection-end-line="76" selection-end-column="79" />
               <folding>
                 <element signature="e#0#24#0" expanded="true" />
@@ -83,10 +80,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MooScripts.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="MooScripts.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/MooScripts.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.3328336">
+            <state vertical-scroll-proportion="-3.9642856">
               <caret line="72" column="29" selection-start-line="72" selection-start-column="28" selection-end-line="72" selection-end-column="29" />
               <folding>
                 <element signature="e#45#57#0" expanded="true" />
@@ -142,9 +139,10 @@
     <order />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="1" />
+    <option name="x" value="2" />
+    <option name="y" value="2" />
     <option name="width" value="1598" />
-    <option name="height" value="860" />
+    <option name="height" value="858" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <OptionsSetting value="true" id="Add" />
@@ -173,7 +171,7 @@
   <component name="PropertiesComponent">
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/main.py" />
+    <property name="last_opened_file_path" value="$USER_HOME$/Desktop/Academic/Senior/Fall/BIOEN 423" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth0" value="43" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder0" value="0" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth1" value="48" />
@@ -197,6 +195,7 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Keagan Moo\Desktop\Academic\Senior\Fall\BIOEN 423" />
       <recent name="C:\Anaconda\Scripts\Snek\abc" />
       <recent name="$PROJECT_DIR$" />
     </key>
@@ -401,7 +400,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1" y="0" width="1598" height="860" extended-state="6" />
+    <frame x="2" y="2" width="1598" height="858" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.123125" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -447,29 +446,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/gillespie.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="23" column="17" selection-start-line="23" selection-start-column="17" selection-end-line="23" selection-end-column="17" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MooScripts.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#45#57#0" expanded="true" />
-            <element signature="e#400#630#0" expanded="false" />
-            <element signature="e#3535#3863#0" expanded="false" />
-            <element signature="e#4100#4598#0" expanded="false" />
-            <element signature="e#5034#7322#0" expanded="false" />
-            <element signature="e#7401#8349#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/KimScripts.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -896,17 +872,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="76" column="0" selection-start-line="76" selection-start-column="0" selection-end-line="76" selection-end-column="79" />
-          <folding>
-            <element signature="e#0#24#0" expanded="true" />
-            <element signature="e#219#1051#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/KimScripts.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-21.777779">
@@ -925,9 +890,25 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$USER_HOME$/Desktop/Academic/Senior/Fall/BIOEN 423/HW1.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Downloads/HW1.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5658807">
+          <caret line="25" column="23" selection-start-line="25" selection-start-column="23" selection-end-line="25" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/MooScripts.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3328336">
+        <state vertical-scroll-proportion="-3.9642856">
           <caret line="72" column="29" selection-start-line="72" selection-start-column="28" selection-end-line="72" selection-end-column="29" />
           <folding>
             <element signature="e#45#57#0" expanded="true" />
@@ -936,6 +917,17 @@
             <element signature="e#4100#4598#0" expanded="false" />
             <element signature="e#5034#7322#0" expanded="false" />
             <element signature="e#7401#8349#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.023578363">
+          <caret line="76" column="0" selection-start-line="76" selection-start-column="0" selection-end-line="76" selection-end-column="79" />
+          <folding>
+            <element signature="e#0#24#0" expanded="true" />
+            <element signature="e#219#1051#0" expanded="false" />
           </folding>
         </state>
       </provider>
