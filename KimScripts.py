@@ -19,9 +19,10 @@ def ssa(param_input):
     # Third last param: time interval
     # Second last param: Number of data points.
     # the last param: not necessary at this point.
-
+    print "SSA IN"
     str_return = lib.gillespie(param_input)
     # print str_return
+    print "SSA OUT"
     return str_return
 
 

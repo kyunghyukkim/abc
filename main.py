@@ -8,6 +8,7 @@ lib = cdll.LoadLibrary('./libfoo.so')
 lib.gillespie.restype = c_char_p
 
 def simulate(param):
+    print "SIMULATE ----------------------------------------------------------"
     N_Species = len(param.loc['Sinit'])
     N_param = len(param.loc['theta'])
 
@@ -16,18 +17,29 @@ def simulate(param):
     t_param_str = ' '.join(map(str, param.loc['t_param'][0].tolist()))
 
     param_str = ' '.join([Sinit_str, theta_str, t_param_str])
-
+    print param_str
+    print "SIM INTER ---------------------------------------------------------"
     y = pd.read_table(StringIO(kim.ssa(param_str)), skiprows=0, nrows=5000, sep=" ", usecols = range(0,N_Species+1))
-
+    print y
     column_name = []
     column_name.append("Time")
+    print "SIM IN2ER ---------------------------------------------------------"
     for x in range(0, N_Species):
         column_name.append('S'+str(x))
+    print "SIM IN3ER ---------------------------------------------------------"
+    print y
     y.columns = column_name
+    print "SIMCOL"
     y = y.set_index(['Time'])
+    print y
+    print "SIMDEX"
     y = y.iloc[0:-2] # Somehow the last time point becomes corrupted with NaN and other special characters.
+    print y
+    print "SIM IN4ER ---------------------------------------------------------"
     for col in column_name[1:]:
+        print y[col]
         y[col] = y[col].apply(int)
+    print "SIM IN5ER ---------------------------------------------------------"
     return y
 
 
@@ -72,6 +84,7 @@ def input_to_df(input_str, N_Species, N_param):
 # The last param: Number of data points.
 
 # Simulation parameter initialization
+print "ONE TEST --------------------------------------------------------------"
 N_Species = 3
 N_param = 4
 param_input = input_to_df("10 0 100 0.4 2 100 0.1 0.02 10", N_Species, N_param)
@@ -82,13 +95,16 @@ N_iter = 2
 N_part = 5
 
 # synthetic experimental data
+print "TWO TEST --------------------------------------------------------------"
 param_input2 = input_to_df('10 0 100 0.4 1 200 0.01 0.02 10', N_Species, N_param)
+print "SIM TEST --------------------------------------------------------------"
 x = simulate(param_input2)
 
 
 # input: a threshold epsilon
 epsilon = 1.0
 
+print "FOR TEST --------------------------------------------------------------"
 for t in range(0, N_iter):
     epsilon = kim.epsilon_next(epsilon)
 
