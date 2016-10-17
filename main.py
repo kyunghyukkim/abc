@@ -147,6 +147,7 @@ for t in range(0, N_iter):
     i = 0
     print "N+part"
     print N_part
+    exit(1)
     while (i < N_part):
         print "i="
         print i

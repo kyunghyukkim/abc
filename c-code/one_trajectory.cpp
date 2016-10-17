@@ -221,10 +221,17 @@ bool  MC_not_finished(std::stringstream& STR_OUTPUT)
 	TIME+=DELT;
    
 	while(TIME>INDEX_GRID*GRID_CONST) {
+      
       double INBETWEEN = INDEX_GRID*GRID_CONST;
 		char myChar[5];
-      sprintf(myChar, "%f", INBETWEEN);
-      STR_OUTPUT << myChar;
+      sprintf(myChar, "%lf", INBETWEEN);
+      STR_OUTPUT << myChar << " ";
+      
+      
+      
+      cout << "NUMBER OF SPECIES\n";
+      cout << NUM_SPEC;
+      cout << "\n";
 		for(i=1;i<=NUM_SPEC;i++){
 			STR_OUTPUT << S[i] << " ";
 		}
