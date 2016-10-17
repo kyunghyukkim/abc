@@ -1,4 +1,6 @@
-from ctypes import * 
+from ctypes import *
+
+# This line causes the error (Keagan)
 lib = cdll.LoadLibrary('./libfoo.so')
 
 ##f.bar(c_double(1.2))

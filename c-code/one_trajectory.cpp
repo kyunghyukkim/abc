@@ -11,6 +11,9 @@
 #include "./lib/corfun.cpp"
 #include "./lib/average.cpp"
 
+#include<iostream>
+using namespace std;
+
 //using namespace std;
 #define MAX(c1,c2) ((c1>c2)? c1:c2)
 
@@ -64,10 +67,20 @@ bool  MC_not_finished(std::stringstream& str);
 
 char * gillespie(char *str)
 {
+
+   cout << "Gillespie Lives\n";
+   
 	std::stringstream STR_OUTPUT;
 	
+   cout << "Model_def in\n";
+   
 	model_def(str, STR_OUTPUT);
+   
+   cout << "From model_def tp time_evol\n";
+   
 	time_evol(STR_OUTPUT);
+   
+   cout << "time_evol escaped\n";
 	
 	const std::string& tmp = STR_OUTPUT.str();
 	STR_OUTPUT.str("");
@@ -80,7 +93,12 @@ char * gillespie(char *str)
 	while (cstr[i]){
 		cstr2[i] = cstr[i];
 		i++;
-		}
+	}
+      
+   cout << "cstr2\n";
+   cout << cstr2;
+   cout << "\n";    
+    
 	return cstr2;
 	//return cstr;
 }
@@ -163,10 +181,13 @@ void propensity(void)
 
 void time_evol(std::stringstream& STR_OUTPUT)
 {
+
+   cout << "time_evol intimate\n";
 	
 	init_genrand(time(NULL)+genrand_int32());
 	init_state();
-		
+	
+   cout << "initialization complete\n";
 
 	//STR_OUTPUT << std::endl;	
 	//STR_OUTPUT << "Time" << " ";
@@ -174,6 +195,8 @@ void time_evol(std::stringstream& STR_OUTPUT)
 	//	STR_OUTPUT << "S" <<i<< " ";
 	//}
 	//STR_OUTPUT << std::endl;	
+   
+   cout << "MC_not_finished in\n";
 	while(INDEX_GRID < NGRID_BF_STEADY )  MC_not_finished(STR_OUTPUT);
 }
 
@@ -184,18 +207,31 @@ bool  MC_not_finished(std::stringstream& STR_OUTPUT)
 	double rand;
 	int index;
 	int i;
-
+   
+   cout << "prop\n";
+   
 	propensity();
 	for(i=1;i<=NUM_REACT;i++) sum_rate+=v[i];
-
+   
 	if(sum_rate!=0) {
 		DELT=-log(genrand_real3())/sum_rate;
 		for(i=1;i<=NUM_REACT;i++) sv[i]=v[i]/sum_rate;
 	}
 	//if reaction finishes, then new DELT is going to be the last DELT just before reaction finishes.
 	TIME+=DELT;
+   
 	while(TIME>INDEX_GRID*GRID_CONST) {
-		STR_OUTPUT <<  INDEX_GRID*GRID_CONST << " ";
+      
+      double INBETWEEN = INDEX_GRID*GRID_CONST;
+		char myChar[5];
+      sprintf(myChar, "%lf", INBETWEEN);
+      STR_OUTPUT << myChar << " ";
+      
+      
+      
+      cout << "NUMBER OF SPECIES\n";
+      cout << NUM_SPEC;
+      cout << "\n";
 		for(i=1;i<=NUM_SPEC;i++){
 			STR_OUTPUT << S[i] << " ";
 		}
@@ -204,7 +240,7 @@ bool  MC_not_finished(std::stringstream& STR_OUTPUT)
 		
 		if(++INDEX_GRID>NGRID_BF_STEADY) return 0;
 	}
-
+   
 	//If reaction is not finished, do update. otherwise leave it unchanged.
 	rand=genrand_real3();
 	if(sum_rate!=0){
