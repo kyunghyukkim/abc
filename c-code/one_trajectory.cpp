@@ -33,7 +33,7 @@ double  *sumS, *sumS2;
 long **counterS;
 double *v;
 
-int **stoi;
+int **stoich;
 int N;
 
 int NUM_SPEC;
@@ -147,24 +147,24 @@ void model_def(char *str_c, std::stringstream& STR_OUTPUT)
 	v=(double *)calloc(NUM_REACT+1, sizeof(double));
 
 	//	Stoichiometry matrix
-	stoi=(int **)calloc(NUM_SPEC+1, sizeof(int *));
+	stoich=(int **)calloc(NUM_SPEC+1, sizeof(int *));
 	for(i=1;i<=NUM_SPEC;i++) 
-		stoi[i]=(int *)calloc(NUM_REACT+1, sizeof(int));
+		stoich[i]=(int *)calloc(NUM_REACT+1, sizeof(int));
 
-	for(i=1;i<=NUM_SPEC;i++)for(j=1;j<=NUM_REACT;j++) stoi[i][j]=0;
+	for(i=1;i<=NUM_SPEC;i++)for(j=1;j<=NUM_REACT;j++) stoich[i][j]=0;
 
 
 	propensity();
 
-	stoi[1][1]=1;
-	stoi[1][2]=-1;
-	stoi[1][3]=-1;
-	stoi[1][4]=1;
+	stoich[1][1]=1;
+	stoich[1][2]=-1;
+	stoich[1][3]=-1;
+	stoich[1][4]=1;
 
-	stoi[2][3]=-1;
-	stoi[2][4]=1;
-	stoi[3][3]=1;
-	stoi[3][4]=-1;
+	stoich[2][3]=-1;
+	stoich[2][4]=1;
+	stoich[3][3]=1;
+	stoich[3][4]=-1;
 
 
 }
@@ -246,7 +246,7 @@ bool  MC_not_finished(std::stringstream& STR_OUTPUT)
 	if(sum_rate!=0){
 		index=determine_reaction(sv, rand);
 		for(i=1;i<=NUM_SPEC;i++) {
-			S[i]+=stoi[i][index];
+			S[i]+=stoich[i][index];
 		}
 	}
 	return 1;  //Enzymatic reactions are not finished.
