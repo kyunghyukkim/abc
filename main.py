@@ -19,7 +19,8 @@ def simulate(param):
     param_str = ' '.join([Sinit_str, theta_str, t_param_str])
     print param_str
     print "SIM INTER ---------------------------------------------------------"
-    y = pd.read_table(StringIO(kim.ssa(param_str)), skiprows=0, nrows=5000, sep=" ", usecols = range(0,N_Species+1))
+    y = pd.read_table(StringIO(kim.ssa(param_str)), skiprows=0, nrows=5000, sep=" ", usecols = range(0,N_Species + 1))
+    print "MARK --------------------------------------------------------------"
     print y
     column_name = []
     column_name.append("Time")
@@ -27,6 +28,7 @@ def simulate(param):
     for x in range(0, N_Species):
         column_name.append('S'+str(x))
     print "SIM IN3ER ---------------------------------------------------------"
+    print "Bluh"
     print y
     y.columns = column_name
     print "SIMCOL"
@@ -105,9 +107,13 @@ x = simulate(param_input2)
 epsilon = 1.0
 
 print "FOR TEST --------------------------------------------------------------"
+print range(0, N_iter)
+print "Format Check"
+print param_input2
 for t in range(0, N_iter):
     epsilon = kim.epsilon_next(epsilon)
-
+    print "t="
+    print t
 
     if t == 0:
         #param_inputs = pd.Series([None] * N_part)
@@ -137,11 +143,20 @@ for t in range(0, N_iter):
         #exit(1)
         #param_inputs = perturbed according to a transition kernel K
 
-
+    print "WHILE TEST --------------------------------------------------------------"
     i = 0
-
+    print "N+part"
+    print N_part
     while (i < N_part):
-        y = simulate(pd.DataFrame(param_tilde[i].rename(0)))
+        print "i="
+        print i
+        print "TILDE TES~T"
+        print pd.DataFrame(param_tilde[0])
+        #print "RENAME TEST"
+        #print pd.DataFrame(param_tilde[1].rename(0))
+        print "SIMULATE IN"
+        y = simulate(pd.DataFrame(param_tilde[i]))
+        print "SIMULATE OUT"
         print y.head()
         # distance computation
         x_norm = x.apply(lambda x: x*len(x)/x.sum())

@@ -2,6 +2,8 @@
 __author__ = 'Keagan Moo'
 import numpy
 import pandas
+import csv
+
 
 # euclidd (Euclidean Distance Function) will take two lists of points
 # Kim: to speed up the computation by using vetors, lists need to be pandas.Series.
@@ -237,6 +239,60 @@ def RejectionSampling(type = 'Box', var = 1, center = -666.666):
 
     return success
 
+def GenerateCorrelate(alpha = 1, beta = -1, gamma = 2, delta = 3, N = 1000):
+
+    x = numpy.random.normal(alpha,gamma, N)
+    y = [None]*N
+    for i in range(0,len(x)):
+        y[i] = numpy.random.normal(beta*x[i], delta, 1)[0]
+    print "For Out"
+    print x
+    print y
+    primaryDist = pandas.DataFrame({'x':x, 'y':y})
+
+    print "Data Frame"
+    print primaryDist
+
+    ofile = open('TestCell.csv', "wb")
+    writer = csv.writer(ofile, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
+    for i in range(1000):
+        z = [x[i], y[i]]
+        writer.writerow(z)
+
+    ofile.close()
+
+    return primaryDist
+
+
+def LinearTransform(S1, S2, dim, N):
+    # dim = the number of parameters each particle possesses
+    # N = number of particles being input
+    xar = ["P1" "P2" "P3" "P4" "P5" "P6" "P7" "P8" "P9" "P10" "P11" "P12"]
+    xar = xar[range(dim)]
+    Tstar = [None] * N
+
+    # Do we want to just compare each particle to eachother assuming they will be unrelated?
+    # Or do we want to compare each particle to every single other particle?
+
+    for i in range(N):
+        Tstack = [None] * dim
+        for j in range(dim):
+            Tbit = S1[i][j]/S2[i][j]
+            Tstack[j] = Tbit
+        Tstar[i] = Tstack
+
+    # perhaps we get the initial guess for the multiplier this way and assume B = 0 to start with? Eg no translation
+    # Either that or we generate purely random numbers for both. But if we want a prior we have to pick one.
+    # Then I guess see which system works the best... Again, against a single particle or the whole distribution.
+    # Perhaps limit the number of particles to prevent over fitting.
+
+    # The distribution model is just overly simple here. We would just need to calculate the mean of each distribution
+    # then the standard deviation. Then the transform would literally be just adding the difference to every particle,
+    # and spreading them out from the center by some amount proportional to the new SD.
+
+    transforms = Tstar
+
+    return transforms
 
 # From Main for Testing
 def input_to_df(input_str, N_Species, N_param):
@@ -260,4 +316,3 @@ def input_to_df(input_str, N_Species, N_param):
     dict = {'Sinit': Sinit, 'theta': theta, 't_param': t_param}
     df = pandas.concat(dict)
     return df
-
