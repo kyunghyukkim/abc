@@ -290,6 +290,9 @@ def LinearTransform(S1, S2, dim, N):
     # then the standard deviation. Then the transform would literally be just adding the difference to every particle,
     # and spreading them out from the center by some amount proportional to the new SD.
 
+    # So that would be 2*n numbers to solve for because each parameter we get has both a mean and a standard deviation
+
+
     transforms = Tstar
 
     return transforms

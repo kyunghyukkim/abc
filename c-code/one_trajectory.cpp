@@ -208,8 +208,6 @@ bool  MC_not_finished(std::stringstream& STR_OUTPUT)
 	int index;
 	int i;
    
-   cout << "prop\n";
-   
 	propensity();
 	for(i=1;i<=NUM_REACT;i++) sum_rate+=v[i];
    
@@ -227,11 +225,6 @@ bool  MC_not_finished(std::stringstream& STR_OUTPUT)
       sprintf(myChar, "%lf", INBETWEEN);
       STR_OUTPUT << myChar << " ";
       
-      
-      
-      cout << "NUMBER OF SPECIES\n";
-      cout << NUM_SPEC;
-      cout << "\n";
 		for(i=1;i<=NUM_SPEC;i++){
 			STR_OUTPUT << S[i] << " ";
 		}

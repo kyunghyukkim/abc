@@ -7,14 +7,20 @@ from ctypes import *
 lib = cdll.LoadLibrary('./libfoo.so')
 lib.gillespie.restype = c_char_p
 
-def simulate(param):
+# We pass in an i because over iterations the name of the dictionary changes from '0' to '1' ect.
+def simulate(param, i = 0):
     print "SIMULATE ----------------------------------------------------------"
     N_Species = len(param.loc['Sinit'])
     N_param = len(param.loc['theta'])
-
-    Sinit_str = ' '.join(map(str, param.loc['Sinit'][0].tolist()))
-    theta_str = ' '.join(map(str, param.loc['theta'][0].tolist()))
-    t_param_str = ' '.join(map(str, param.loc['t_param'][0].tolist()))
+    print "BEGIN JOINING -----------------------------------------------------"
+    print param
+    print param.loc['Sinit']
+    print "Sinit -----------------------------------------------------"
+    Sinit_str = ' '.join(map(str, param.loc['Sinit'][i].tolist()))
+    print "Theta -----------------------------------------------------"
+    theta_str = ' '.join(map(str, param.loc['theta'][i].tolist()))
+    print "Param -----------------------------------------------------"
+    t_param_str = ' '.join(map(str, param.loc['t_param'][i].tolist()))
 
     param_str = ' '.join([Sinit_str, theta_str, t_param_str])
     print param_str
@@ -39,7 +45,6 @@ def simulate(param):
     print y
     print "SIM IN4ER ---------------------------------------------------------"
     for col in column_name[1:]:
-        print y[col]
         y[col] = y[col].apply(int)
     print "SIM IN5ER ---------------------------------------------------------"
     return y
@@ -139,6 +144,9 @@ for t in range(0, N_iter):
             #print param_inputs[ind]
             temp[k] = param[ind]
         #print temp
+        print "T- Death"
+        print N_part
+        print param_input_index_selected
         temp.join(get_params_from_K(N_part - lon(param_input_index_selected)))
         #exit(1)
         #param_inputs = perturbed according to a transition kernel K
@@ -147,7 +155,6 @@ for t in range(0, N_iter):
     i = 0
     print "N+part"
     print N_part
-    exit(1)
     while (i < N_part):
         print "i="
         print i
@@ -155,8 +162,9 @@ for t in range(0, N_iter):
         print pd.DataFrame(param_tilde[0])
         #print "RENAME TEST"
         #print pd.DataFrame(param_tilde[1].rename(0))
+        print i
         print "SIMULATE IN"
-        y = simulate(pd.DataFrame(param_tilde[i]))
+        y = simulate(pd.DataFrame(param_tilde[i]), i)
         print "SIMULATE OUT"
         print y.head()
         # distance computation
@@ -176,12 +184,16 @@ for t in range(0, N_iter):
         else:
             # generate a new param_input
             # replace the below with a Kernel function
+            print "BACK TO INITIALS -----------------------------------------------"
             param_tilde[i] = kim.initial_particles(param_input, 1)[0]
             #print "when dist > epsilon, dummy, dummy"
             # print param_inputs
+        print "Weighting"
         #calculate weight for all particles
         if i == 0:
             w[i] = 1
         else:
             w[i] = 1+2
         w = w/w.sum()
+        print "It all ends"
+
