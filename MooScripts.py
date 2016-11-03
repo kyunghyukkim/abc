@@ -1,6 +1,8 @@
 #!/Anaconda/python
 __author__ = 'Keagan Moo'
 import numpy
+import scipy
+import scipy.integrate
 import pandas
 import csv
 
@@ -25,24 +27,24 @@ def euclidd(list1, list2):
 # a theta distribution, the previous theta distribution,
 # a perturbation function, and a proposal distribuiton to
 # create a new weighting vector for particles.
-def weightt(t, N, wgtp, pThet, pThetp, pTurb, piTurb):
-    if t == 0:
-        return 1
-    elif t > 0:
+def weightt(N, prevWeights, pastWeights, newThet, prevThet, prior):
+    newWeights = []
+    for i in range(len(newThet)):
         sum = 0
-        for i in range(N):
-            bit = wgtp * pTurb(pThetp, pThet)
+        for j in range(N):
+            bit = prevWeights[j] * PerturbationProb(newThet[i], prevThet[j], prevWeights, pastWeights)
             sum = sum + bit
-        return piTurb(pThet)/sum
-    else:
-        return -666
+        weight = prior(newThet[i])/sum
+        numpy.append(newWeights, weight)
+    return newWeights
+
 
 # Kpert (K perturbation function) stands in for the current perturbation kernel
 # it is defined online, but could be changed if needed. It takes the total number
 # of particles, a standard deviation and the current and previous parameter distributions
 # (theta).
 
-# Change to multi-variate normal
+# Change to multi-variate normal (deprecated)
 def Kpert(t, N, sigj, pThet, pThetp):
     product = 1
     for j in range(N):
@@ -50,6 +52,8 @@ def Kpert(t, N, sigj, pThet, pThetp):
         product = product * bit
     return product
 
+# Multi variate normal kernel without strict adherence to either PNAS or arxiv papers
+# Generates particles, not probabilities
 def PerturbationKernel(particles, N):
 
     print "Analyzing input type..."
@@ -106,12 +110,49 @@ def PerturbationKernel(particles, N):
         results[windex] = result
         windex += 1
 
+    print "There should be", N, "results"
     print "Viewing Results..."
     print results
 
 
     print "Exiting Perturbation"
     return results
+
+# This function needs to take in both the new and previous sets of particles
+# Then using the posteriorFunk of both this tolerance and the previous posterior
+# function to integrate over both sets of thetas.
+# p = posterior     d = dimensionality
+# p(set of particles | Set of real data) the probability of a set of particles existing given the real data
+# f(Set of real Data | Set of particles ) the likely hood of a set of real data resulting from certain parameters in particiles.
+def PertSum(newThet, prevThet, newW, prevW, N):
+
+    # Left over functionality from the posterior function based version of the perturbation Kernel
+    #primaryFunction = prevPosteriorFunk(prevThet, x)*newPosteriorFunk(newThet,x)*(newThet-prevThet)*numpy.transpose((newThet-prevThet))
+    #scipy.integrate.dblquad(primaryFunction, 0, 100000,lambda x: 0, lambda x: 100000)
+
+    firstSum = 0
+    for i in range(0, N):
+        secondSum = 0
+        for k in range(0, N):
+            byte = prevW[i]*newW[k]*(newThet[k] - prevThet[i])*numpy.transpose((newThet[k]-prevThet[i]))
+            secondSum = secondSum + byte
+        firstSum = firstSum + secondSum
+
+    return firstSum
+
+# This function should take in a newTheta and a previousTheta and return a probability value.
+# The probability that such a new theta would result from the old one.
+def PerturbationProb(newThet, prevThet, newW, prevW, N):
+
+    # newThet should be a particle in question
+    # prevThet should be a particle to compare it to from a prior set of particles
+
+
+    d = len(newThet)
+    calculatedSigmat = PertSum(newThet, prevThet, newW, prevW, N)
+    prop = ((2*3.14159)^(-d/2))*((numpy.linalg.det(calculatedSigmat))^(-0.5))*numpy.exp(-0.5*numpy.transpose((newThet-prevThet))*calculatedSigmat^(-1)*(newThet-prevThet))
+
+    return prop
 
 # sigmaj produces the deviation for the Kpert function from the various statistical
 # properties of the system. It takes past distributions and the index you are currently
@@ -291,7 +332,7 @@ def LinearTransform(S1, S2, dim, N):
     # and spreading them out from the center by some amount proportional to the new SD.
 
     # So that would be 2*n numbers to solve for because each parameter we get has both a mean and a standard deviation
-
+    # The transform would then be to multiply each S1 value by its mean modifier and then somehow stratify them?
 
     transforms = Tstar
 

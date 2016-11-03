@@ -50,7 +50,7 @@ def simulate(param, i = 0):
     return y
 
 
-
+# Revisit if convergance doesn't work. Change on the distibution of param inputs selected initially from prior input
 def input_to_df(input_str, N_Species, N_param):
     input_list = map(float, input_str.split(' '))
     theta_index_name = []
@@ -125,7 +125,7 @@ for t in range(0, N_iter):
         param_inputs = kim.initial_particles(param_input, N_part)
         param_tilde = param_inputs
         param = pd.DataFrame()
-        w = pd.Series([0.0]*N_part)
+        w = pd.Series([1/float(N_part)]*N_part)
         print "t=0"
         # print param_inputs
     else:
@@ -137,6 +137,7 @@ for t in range(0, N_iter):
         print "num of the selected particles = ", len(param_input_index_selected)
 
         temp = pd.DataFrame()
+        print "ARE THESE PARTICLES?"
         print param_input_index_selected
         print param
         for ind, k in zip(param_input_index_selected, range(0, len(param_input_index_selected))):
@@ -147,8 +148,35 @@ for t in range(0, N_iter):
         print "T- Death"
         print N_part
         print param_input_index_selected
-        temp.join(get_params_from_K(N_part - lon(param_input_index_selected)))
-        #exit(1)
+        print "JOIN FORMAT"
+
+        thetaTemp = temp.loc['theta']
+        topSinit = temp.loc['Sinit']
+        topTParam = temp.loc['t_param']
+        thetaIndecies =  list(thetaTemp.index)
+        newThetas = pd.DataFrame(moo.PerturbationKernel(param, N_part - len(param_input_index_selected)))
+        newThetas.index = thetaIndecies
+        print "newThetas"
+        print newThetas
+        for newThet in range(N_part - len(param_input_index_selected)):
+            print topSinit
+            print topSinit[newThet]
+            topSinit[newThet + N_part - 2] = topSinit[newThet]
+            topTParam[newThet + N_part - 2] = topTParam[newThet]
+            thetaTemp[newThet + N_part - 2] = newThetas.iloc[:,newThet]
+
+            print "HOW'S IT LOOK"
+            print topSinit
+            print topTParam
+            print thetaTemp
+
+
+        print temp
+        #temp.join(newThetas)
+        dict = {'Sinit': topSinit, 'theta': thetaTemp, 't_param': topTParam}
+        temp = pd.concat(dict)
+        print "Pray to God"
+        print temp
         #param_inputs = perturbed according to a transition kernel K
 
     print "WHILE TEST --------------------------------------------------------------"
@@ -191,9 +219,15 @@ for t in range(0, N_iter):
         print "Weighting"
         #calculate weight for all particles
         if i == 0:
+            print "if"
             w[i] = 1
         else:
+            print "else"
             w[i] = 1+2
+        print "before"
+        print w
         w = w/w.sum()
+        print "after"
+        print w
         print "It all ends"
 
