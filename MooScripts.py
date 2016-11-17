@@ -5,7 +5,7 @@ import scipy
 import scipy.integrate
 import pandas
 import csv
-
+import KimScripts as kim
 
 # euclidd (Euclidean Distance Function) will take two lists of points
 # Kim: to speed up the computation by using vetors, lists need to be pandas.Series.
@@ -21,20 +21,45 @@ def euclidd(list1, list2):
     diff = list1 - list2
     return (diff.apply(lambda x: x**2).sum())**0.5
 
+# Prior should take in a distribution and select particles from it according to a predetermined distribution
+# in our case uniform.
+def prior(param_input):
+    print "WARNING THIS FUNCTION IS DEPRECATED AND CURRENTLY REPRESENTED BY Initial_particles FROM KIM SCRIPTS"
+    # Replace this with whatever your prior distribution ends up being
+    Thet = kim.initial_particles(param_input, 10)
+    return Thet
+
+# This version of prior should return a single value as a result of interpreting the probability of a single
+# particle being passed in. The probability produced should simply be the sum of the odds of P1 being equal to
+# what it is based on the distribution of p1's in the prior distribution and P2 being what it is and P3
+# being what it is and so on and so forth. This will all get normalized eventually.
+def priorProb(param_input, Thet):
+    theMany = prior(param_input)
+    theCount = 0
+    for i in theMany:
+        theSubject = theMany[i]
+        print theSubject
+        for j in theSubject:
+            print theSubject[j]
+
+    print Thet
+
+    return 1
+
 
 # weightt (Weight Calculator) takes a tolerance counter value,
 # a total number of particles, a previous weight vector,
 # a theta distribution, the previous theta distribution,
 # a perturbation function, and a proposal distribuiton to
 # create a new weighting vector for particles.
-def weightt(N, prevWeights, pastWeights, newThet, prevThet, prior):
+def weightt(N, prevWeights, pastWeights, newThet, prevThet, param_input):
     newWeights = []
     for i in range(len(newThet)):
         sum = 0
         for j in range(N):
             bit = prevWeights[j] * PerturbationProb(newThet[i], prevThet[j], prevWeights, pastWeights)
             sum = sum + bit
-        weight = prior(newThet[i])/sum
+        weight = priorProb(param_input, newThet[i])/sum
         numpy.append(newWeights, weight)
     return newWeights
 
