@@ -5,4 +5,5 @@ import KimScripts as kim
 import pandas as pd
 
 param_input = moo.input_to_df("10 0 100 0.4 2 100 0.1 0.02 10", 3, 4)
-moo.priorProb(param_input, "Hello")
+Thet = kim.initial_particles(param_input, 1)
+moo.priorProb(param_input, Thet)

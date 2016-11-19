@@ -26,7 +26,7 @@ def euclidd(list1, list2):
 def prior(param_input):
     print "WARNING THIS FUNCTION IS DEPRECATED AND CURRENTLY REPRESENTED BY Initial_particles FROM KIM SCRIPTS"
     # Replace this with whatever your prior distribution ends up being
-    Thet = kim.initial_particles(param_input, 10)
+    Thet = kim.initial_particles(param_input, 1000)
     return Thet
 
 # This version of prior should return a single value as a result of interpreting the probability of a single
@@ -34,17 +34,51 @@ def prior(param_input):
 # what it is based on the distribution of p1's in the prior distribution and P2 being what it is and P3
 # being what it is and so on and so forth. This will all get normalized eventually.
 def priorProb(param_input, Thet):
+    print "priorProb"
     theMany = prior(param_input)
-    theCount = 0
-    for i in theMany:
+    print "theMany"
+    print theMany
+    # This strategy is folly. Try again by building a distribution for each paramater and calculating the probability of
+    # each parameter originating from that distribution. Then multiply those odds together.
+
+    # Questions: How should we handle rounding? How do you want to change up the prior issue? I could just replace it
+    # With the multivariate normal perturbation kernel.
+
+    # Use len(str(#)) to get its number after an initial rounding to say 2 decimal places then round more based on that?
+    # It would make more sense to round based on variability though.
+    params = numpy.shape(theMany)[1]
+    parts = len(theMany[1].loc['theta'])
+    paramaterSet = [[0 for x in range(params)] for y in range(parts)]
+
+    for i in range(numpy.shape(theMany)[1]):
         theSubject = theMany[i]
-        print theSubject
-        for j in theSubject:
-            print theSubject[j]
+        for j in range(len(paramaterSet)):
+            paramaterSet[j][i] = theSubject.loc['theta'][j]
 
-    print Thet
+    probProduct = -1
+    for p in range(len(paramaterSet)):
+        theCount = 0
+        itIs = Thet[0].loc['theta'][j]
+        paramater = paramaterSet[p]
+        for i in range(len(paramater)):
+            toMatch = paramater[i]
+            if (round(itIs,-2) == round(toMatch, -2)):
+                theCount = theCount + 1
+        print "The Count of", p
+        print theCount
+        theProb = (theCount * 1.0)/len(paramater)
+        print "The Prob of", p
+        print theProb
+        if (probProduct == -1):
+            probProduct = theProb
+        else:
+            probProduct = probProduct * theProb
+        #print "A Step"
+        # probProduct
 
-    return 1
+    print "The Probability"
+    print probProduct
+    return probProduct
 
 
 # weightt (Weight Calculator) takes a tolerance counter value,
