@@ -33,7 +33,7 @@ def prior(param_input):
 # particle being passed in. The probability produced should simply be the sum of the odds of P1 being equal to
 # what it is based on the distribution of p1's in the prior distribution and P2 being what it is and P3
 # being what it is and so on and so forth. This will all get normalized eventually.
-def priorProb(param_input, Thet):
+def priorProbDep(param_input, Thet):
     print "priorProb"
     theMany = prior(param_input)
     print "theMany"
@@ -80,22 +80,45 @@ def priorProb(param_input, Thet):
     print probProduct
     return probProduct
 
+def priorProb(Thet, means, sigmas):
+    print Thet
+    paramaters = Thet.loc['theta']
+    probProduct = -1
+    print paramaters
+    for i in range(len(paramaters)):
+        normal = scipy.stats.norm(means[i], sigmas[i])
+        prob = scipy.stats.norm(means[i], sigmas[i]).pdf(paramaters[i])
+
+        if (probProduct == -1):
+            probProduct = prob
+        else:
+            probProduct = probProduct * prob
+
+    print probProduct
+
+
+
+    return probProduct
+
+
 
 # weightt (Weight Calculator) takes a tolerance counter value,
 # a total number of particles, a previous weight vector,
 # a theta distribution, the previous theta distribution,
 # a perturbation function, and a proposal distribuiton to
 # create a new weighting vector for particles.
-def weightt(N, prevWeights, pastWeights, newThet, prevThet, param_input):
-    newWeights = []
-    for i in range(len(newThet)):
-        sum = 0
-        for j in range(N):
-            bit = prevWeights[j] * PerturbationProb(newThet[i], prevThet[j], prevWeights, pastWeights)
-            sum = sum + bit
-        weight = priorProb(param_input, newThet[i])/sum
-        numpy.append(newWeights, weight)
-    return newWeights
+def weightt(N, prevWeights, pastWeights, newThet, prevThet, i):
+    #newWeights = []
+    #for i in range(len(newThet)):
+    sum = 0
+
+    for j in range(N):
+        bit = pastWeights[j] * PerturbationProb(newThet[i], prevThet[j], prevWeights, pastWeights, N)
+        sum = sum + bit
+
+    weight = priorProb(newThet[i], [0.4, 1, 200, 0.01], [1, 2, 400, 1])/sum
+    #numpy.append(newWeights, weight)
+    return weight
 
 
 # Kpert (K perturbation function) stands in for the current perturbation kernel
@@ -115,52 +138,26 @@ def Kpert(t, N, sigj, pThet, pThetp):
 # Generates particles, not probabilities
 def PerturbationKernel(particles, N):
 
-    print "Analyzing input type..."
-    print type(particles)
-
-    print "ViewingParticles..."
-    print particles
-
-    print "Extraction..."
     ThetaSet = particles.loc['theta']
 
-    print "Viewing ThetaSet..."
-    print ThetaSet
-    print "Analyzing Dimensions..."
     rowCount = ThetaSet.shape[0]
     colCount = ThetaSet.shape[1]
-    print "Viewing rowCount..."
-    print rowCount
-    print colCount
+
     means = []
     index = 0
     while index < rowCount:
         subjectParam = ThetaSet.iloc[[index]]
-        print "Viewing subjectParam..."
-        print subjectParam
-
-        print "Appending Means..."
         currentMean = numpy.mean(subjectParam.as_matrix())
-        print currentMean
         means = numpy.append(means, currentMean)
-        print "Viewing Means..."
-        print means
 
-        print "Increment"
         index += 1
-    print "Final Index..."
-    print index
-    print "Expected Index..."
-    print rowCount
+
         #CovarPrep = pandas.DataFrame([CovarPrep,subjectParam])
         #print "Building Covars..."
         #CovarPrep[label] = subjectParam
-    print "Building Covars..."
-    Covar = numpy.cov(ThetaSet)
-    print "Viewing Covars..."
-    print Covar
 
-    print "Generating Results..."
+    Covar = numpy.cov(ThetaSet)
+
     windex = 0
     results = pandas.DataFrame()
     while windex < N:
@@ -172,6 +169,15 @@ def PerturbationKernel(particles, N):
     print "There should be", N, "results"
     print "Viewing Results..."
     print results
+    for i in range(N):
+        print results[i]
+        particle = results[i]
+        for j in range(len(results)):
+            print particle[j]
+            paramater = particle[j]
+            if (paramater < 0):
+                results[i][j] = results[i][j] * -1
+
 
 
     print "Exiting Perturbation"
@@ -205,12 +211,23 @@ def PerturbationProb(newThet, prevThet, newW, prevW, N):
 
     # newThet should be a particle in question
     # prevThet should be a particle to compare it to from a prior set of particles
-
-
-    d = len(newThet)
+    newParams = newThet.loc['theta']
+    d = len(newParams)
     calculatedSigmat = PertSum(newThet, prevThet, newW, prevW, N)
-    prop = ((2*3.14159)^(-d/2))*((numpy.linalg.det(calculatedSigmat))^(-0.5))*numpy.exp(-0.5*numpy.transpose((newThet-prevThet))*calculatedSigmat^(-1)*(newThet-prevThet))
+    #prop = ((2*3.14159)**(-d/2))*((numpy.linalg.det(calculatedSigmat))**(-0.5))*numpy.exp(-0.5*numpy.transpose((newThet-prevThet))*calculatedSigmat^(-1)*(newThet-prevThet))
+    matrixStuff = ((newParams-prevThet.loc['theta']))
 
+    arrayStuff = numpy.empty(d)
+    for index in range(d):
+        numpy.append(arrayStuff, matrixStuff[index]*calculatedSigmat**(-1))
+
+    total = 0
+    for jndex in range(d):
+        total = total + arrayStuff[jndex] * (newParams-prevThet.loc['theta'])[jndex]
+
+    prop = ((2*3.14159)**(-d/2))*((calculatedSigmat)**(-0.5))*numpy.exp(total)
+    print "prop"
+    print prop
     return prop
 
 # sigmaj produces the deviation for the Kpert function from the various statistical

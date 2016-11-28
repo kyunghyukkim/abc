@@ -19,10 +19,9 @@ def ssa(param_input):
     # Third last param: time interval
     # Second last param: Number of data points.
     # the last param: not necessary at this point.
-    print "SSA IN"
+
     str_return = lib.gillespie(param_input)
-    # print str_return
-    print "SSA OUT"
+
     return str_return
 
 
@@ -96,6 +95,7 @@ def initial_particles(param_input, n):
         # Give the appropriate data frame the initial values and time parameters.
         df_Sinit[i] = param_input.loc['Sinit'][0]
         df_t_param[i] = param_input.loc['t_param'][0]
+    print "INITIAL PARTICLES"
     print df_Sinit
     print df_t_param
     print df
