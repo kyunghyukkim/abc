@@ -99,26 +99,29 @@ def input_to_df(input_str, N_Species, N_param):
 print "ONE TEST --------------------------------------------------------------"
 N_Species = 3
 N_param = 4
-param_input = input_to_df("10 0 100 0.4 2 100 0.1 0.02 10", N_Species, N_param)
 
+# Define Each paramaters physical meaning when compared to the simulation program
+param_input1 = input_to_df("10 0 100 0.4 0.5 100 0.1 0.02 10", N_Species, N_param)
+
+print "THREE TEST --------------------------------------------------------------"
+param_input3 = input_to_df('10 0 100 0.4 4 400 1 0.02 10', N_Species, N_param)
+
+param_input = param_input1
 
 # abc algorithm optimization initialization
-N_iter = 2
+N_iter = 3
 N_part = 5
 
 # synthetic experimental data
 print "TWO TEST --------------------------------------------------------------"
 param_input2 = input_to_df('10 0 100 0.4 1 200 0.01 0.02 10', N_Species, N_param)
 
-print "THREE TEST --------------------------------------------------------------"
-param_input3 = input_to_df('10 0 100 0.4 4 400 1 0.02 10', N_Species, N_param)
-
 x = simulate(param_input2)
 
 # Now the PNAS process starts in earnest
 # input: a threshold epsilon
 # Ref PNAS --> PRC1
-epsilon = 1
+epsilon = 0.5
 
 # Start the population indicator at 0 and let it run to the total number of allowed iterations
 for t in range(0, N_iter):
@@ -132,7 +135,7 @@ for t in range(0, N_iter):
     # Ref PNAS --> PRC2.1 when t = 1
     if t == 0:
         #param_inputs = pd.Series([None] * N_part)
-        param_inputs = kim.initial_particles(param_input3, N_part)
+        param_inputs = kim.initial_particles(param_input, N_part)
         param_tilde = param_inputs
         paramSaved = param_inputs
         param = pd.DataFrame()
@@ -176,14 +179,16 @@ for t in range(0, N_iter):
         thetaIndecies =  list(thetaTemp.index)
 
         # Now we generate new particles using the perturbation kernel (DO WE WANT TO USE PARAM OR TEMP?)
-        newThetas = pd.DataFrame(moo.PerturbationKernel(temp, N_part - len(param_input_index_selected)))
+        offset = (N_part - len(param_input_index_selected))
+        newThetas = pd.DataFrame(moo.PerturbationKernel(temp, offset))
         newThetas.index = thetaIndecies
+        print newThetas
 
         for newThet in range(N_part - len(param_input_index_selected)):
 
-            topSinit[newThet + N_part - 2] = topSinit[newThet]
-            topTParam[newThet + N_part - 2] = topTParam[newThet]
-            thetaTemp[newThet + N_part - 2] = newThetas.iloc[:,newThet]
+            topSinit[newThet + N_part - offset] = topSinit[newThet]
+            topTParam[newThet + N_part - offset] = topTParam[newThet]
+            thetaTemp[newThet + N_part - offset] = newThetas.iloc[:,newThet]
 
 
         print temp
@@ -263,29 +268,38 @@ for t in range(0, N_iter):
     # I have backed this all down below the while loop... because both papers say we should update the thetas weights
     # all at once.
     wprep = w
-    for k in range(len(param.loc['theta'])):
+    wnew = pd.Series([1/float(N_part)]*N_part)
+    for k in range(N_part):
         # Why is the first weight always 1?
         if k == -1:
             print "if"
-            w[k] = 1
+            wnew[k] = 1
         # otherwise calculate the weight based on all of the existing weights, and all the past weights according to the
         # formula in the PNAS paper
         else:
             print "Weighting begins"
             print "k"
             print k
-
+            print "param"
+            print param
+            print "paramSaved"
+            print paramSaved
             # Now we define weights based on prior weights, and all current shifts in weights and paramaters and the prior
             print "N_part"
             print N_part
-            print "wpast"
-            w[k] = moo.weightt(N_part, w, wpast, param, paramSaved, k)
+            print "wnew"
+            print wnew
+            print k
+            wnew[k] = moo.weightt(N_part, w, wpast, param, paramSaved, k)
 
     # Normalize the wieghts
-    w = w/w.sum()
+    print "Before norm"
+    print wnew
+    wnew = wnew/wnew.sum()
     print "NEW WEIGHTS"
-    print w
+    print wnew
     wpast = wprep
+    w = wnew
 # Having the first weight always be one massively corrupts the process resulting in the more iterations proceed
 # the smaller the weights assigned to particles that are not the first one which results in the particles being picked
 # almost always being 5 copies of the first particle.

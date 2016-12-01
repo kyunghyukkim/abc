@@ -111,11 +111,12 @@ def weightt(N, prevWeights, pastWeights, newThet, prevThet, i):
     #newWeights = []
     #for i in range(len(newThet)):
     sum = 0
-
+    print prevThet
     for j in range(N):
-        bit = pastWeights[j] * PerturbationProb(newThet[i], prevThet[j], prevWeights, pastWeights, N)
+        bit = pastWeights[j] * PerturbationProb(newThet[i], prevThet[j], newThet, prevThet, prevWeights, pastWeights, N)
         sum = sum + bit
-
+    print "sum", i
+    print sum
     weight = priorProb(newThet[i], [0.4, 1, 200, 0.01], [1, 2, 400, 1])/sum
     #numpy.append(newWeights, weight)
     return weight
@@ -194,12 +195,15 @@ def PertSum(newThet, prevThet, newW, prevW, N):
     # Left over functionality from the posterior function based version of the perturbation Kernel
     #primaryFunction = prevPosteriorFunk(prevThet, x)*newPosteriorFunk(newThet,x)*(newThet-prevThet)*numpy.transpose((newThet-prevThet))
     #scipy.integrate.dblquad(primaryFunction, 0, 100000,lambda x: 0, lambda x: 100000)
-
     firstSum = 0
     for i in range(0, N):
         secondSum = 0
         for k in range(0, N):
-            byte = prevW[i]*newW[k]*(newThet[k] - prevThet[i])*numpy.transpose((newThet[k]-prevThet[i]))
+            difference = newThet[k].loc['theta'] - prevThet[i].loc['theta']
+            subSum = 0
+            for subSumDex in range(len(difference)):
+                subSum = subSum + difference[subSumDex]*difference[subSumDex]
+            byte = prevW[i]*newW[k]*subSum
             secondSum = secondSum + byte
         firstSum = firstSum + secondSum
 
@@ -207,13 +211,16 @@ def PertSum(newThet, prevThet, newW, prevW, N):
 
 # This function should take in a newTheta and a previousTheta and return a probability value.
 # The probability that such a new theta would result from the old one.
-def PerturbationProb(newThet, prevThet, newW, prevW, N):
 
+# ERROR: How do we define the single particle in these calculations that is different? Otherwise the sum will always be the same?
+# In both the Pert Sum and the prop calculation below we cycle through newThet but it should just be one value. Does PrevThet
+# Also just have one value?
+def PerturbationProb(newThet, prevThet, newThetWhole, prevThetWhole, newW, prevW, N):
     # newThet should be a particle in question
     # prevThet should be a particle to compare it to from a prior set of particles
     newParams = newThet.loc['theta']
     d = len(newParams)
-    calculatedSigmat = PertSum(newThet, prevThet, newW, prevW, N)
+    calculatedSigmat = PertSum(newThetWhole, prevThetWhole, newW, prevW, N)
     #prop = ((2*3.14159)**(-d/2))*((numpy.linalg.det(calculatedSigmat))**(-0.5))*numpy.exp(-0.5*numpy.transpose((newThet-prevThet))*calculatedSigmat^(-1)*(newThet-prevThet))
     matrixStuff = ((newParams-prevThet.loc['theta']))
 
