@@ -1,6 +1,9 @@
 import MooScripts as moo
 import KimScripts as kim
 import pandas as pd
+import matplotlib.pyplot as plt
+import pylab
+from scipy.stats.stats import pearsonr
 from StringIO import StringIO
 
 from ctypes import *
@@ -13,7 +16,7 @@ lib.gillespie.restype = c_char_p
 # This data should be compared to the experimental x data to determine the correctness of any given particle
 # Ref PNAS --> PRC2.1 "Generate a data set x** ~ f (x|theta)"
 def simulate(param, i = 0):
-    print "BEGINNING SIMULATION OF:", param
+    #print "BEGINNING SIMULATION OF:", param
     # N_Species is the number of total species being considered. Sinit is the intial value of each specie
     N_Species = len(param.loc['Sinit'])
     # N_param is the number of parameters we are tracking each of which is evaluated in the theta part of the particle
@@ -26,11 +29,11 @@ def simulate(param, i = 0):
 
     # param_str is now created as a single string representation of a single particle
     param_str = ' '.join([Sinit_str, theta_str, t_param_str])
-    print param_str
+    #print param_str
 
     # Here we actually call the simulation script which skips through a python proxy to the C++ script one_trajectory
     y = pd.read_table(StringIO(kim.ssa(param_str)), skiprows=0, nrows=5000, sep=" ", usecols = range(0,N_Species + 1))
-    print "Result is:", y
+    #print "Result is:", y
 
     # Establish a array for column names and ensure that the first one is Time because we will need to manually implement that column
     column_name = []
@@ -46,7 +49,7 @@ def simulate(param, i = 0):
     # make sure the bits that we want to be integer data type become that.
     for col in column_name[1:]:
         y[col] = y[col].apply(int)
-    print "ENDING SIMULATION, FORMATED RESULT IS:", y
+    #print "ENDING SIMULATION, FORMATED RESULT IS:", y
     return y
 
 
@@ -110,7 +113,7 @@ param_input = param_input1
 
 # abc algorithm optimization initialization
 N_iter = 3
-N_part = 5
+N_part = 10
 
 # synthetic experimental data
 print "TWO TEST --------------------------------------------------------------"
@@ -136,11 +139,12 @@ for t in range(0, N_iter):
     if t == 0:
         #param_inputs = pd.Series([None] * N_part)
         param_inputs = kim.initial_particles(param_input, N_part)
-        param_tilde = param_inputs
-        paramSaved = param_inputs
+        param_tilde = param_inputs.copy()
+        paramSaved = param_inputs.copy()
         param = pd.DataFrame()
         # Set all weights equally? Seems a little out of place but could be a fence case
         w = pd.Series([1/float(N_part)]*N_part)
+        wpast = w
         print "t=0"
         print "INITIAL PARTICLES SELECTED"
         print param_inputs
@@ -180,57 +184,79 @@ for t in range(0, N_iter):
 
         # Now we generate new particles using the perturbation kernel (DO WE WANT TO USE PARAM OR TEMP?)
         offset = (N_part - len(param_input_index_selected))
-        newThetas = pd.DataFrame(moo.PerturbationKernel(temp, offset))
+        print temp
+
+        newThetas = pd.DataFrame(moo.PerturbationKernel(temp, N_part))
         newThetas.index = thetaIndecies
         print newThetas
 
-        for newThet in range(N_part - len(param_input_index_selected)):
+        for newThet in range(N_part):
 
-            topSinit[newThet + N_part - offset] = topSinit[newThet]
-            topTParam[newThet + N_part - offset] = topTParam[newThet]
-            thetaTemp[newThet + N_part - offset] = newThetas.iloc[:,newThet]
+            topSinit[newThet] = topSinit[1]
+            topTParam[newThet] = topTParam[1]
+            thetaTemp[newThet] = newThetas.iloc[:,newThet]
 
-
-        print temp
+        perturbSave = temp.copy()
         dict = {'Sinit': topSinit, 'theta': thetaTemp, 't_param': topTParam}
         temp = pd.concat(dict)
         print "PERTURBATION COMPLETE, RESULT:"
         print temp
-        paramSaved = temp
+        paramSaved = temp.copy()
+        param_tilde = temp.copy()
         #param_inputs = perturbed according to a transition kernel K
 
     # Now that we have generated new particles we want to test each and every one of them and choose wheather or now they
     # be passed onto the next test. Here we set the particle indicator to 0 and begin to cycle through them as they appear
     # in temp or param?
     # Ref PNAS --> PRC2.1 Generate a data set and If p(S(x**)) both
+
+    print "param BEFORE IT ALL WAS UNDONE ----------------------------------------------"
+    print param
+    print "paramSaved"
+    print paramSaved
+    print "param_inputs?"
+    print param_inputs
+
     print "NOW WE BEGIN THE CULLING BASED ON SIMULATION COMPARISON"
     i = 0
-    wpast = w
     # for each particle
+    failed = 0
     while (i < N_part):
-        print "i="
-        print i
+        print "i=", i
+
         # Run the simulation as detailed on the top of this python file and in the one_trajectory C++ script
         print "PARTICLES WE HAVE NOW"
         print param_tilde
+        print "param"
+        print param
         y = simulate(pd.DataFrame(param_tilde[i]), i)
-        print "SIMULATE OUT"
-        print y.head()
+        #print "SIMULATE OUT"
+        #print y.head()
         # Normalize all the data points in x and y based on their max values. This is to remove any order of magnitude
         # issues between the expirimental and predicted data.
         x_norm = x.apply(lambda x: x*len(x)/x.sum())
+        #print "x_norm"
+        #print x_norm
+
         y_norm = y.apply(lambda y: y*len(y)/y.sum())
+        #print "y_norm"
+        #print y_norm
+
         num_elements = len(x_norm.columns)*len(x_norm.index)
 
         # Set a new temp (Ovewrwriting the one generated above?) which represents the first step to the distance function
         # recording the errors
-        temp = (x_norm-y_norm).apply(lambda x:x**2).sum().sum()
-        distance = temp/float(num_elements)**0.5
+        distanceWhole = (x_norm-y_norm).apply(lambda x:x**2).sum().sum()
+        print "distanceWhole"
+        print distanceWhole
+        distance = distanceWhole/float(num_elements)**0.5
         print "distance for particle", i , "=", distance
         print "epsilon is,", epsilon
 
         # If the distance it below tolerance its a good particle and we will save it to the param set.
         if distance <= epsilon:
+
+            print "PARTICLE", i, "PASSED"
             param[i] = param_tilde[i]
             if i==0:
                 ys = {0:y}
@@ -244,36 +270,42 @@ for t in range(0, N_iter):
         else:
 
             print "PARTICLE", i, "FAILED"
+            failed = failed + 1
             print i
             print t
-
+            print "param_tilde"
+            print param_tilde
             if (t == 0):
                 param_tilde[i] = kim.initial_particles(param_input, 1)
             else:
                 # generate a new param_input
                 # replace the below with a Kernel function
-                newParams = moo.PerturbationKernel(paramSaved, 1)
+                print "perturbSave"
+                print perturbSave
+                newParams = moo.PerturbationKernel(perturbSave, 1)
                 newParams = newParams[0]
                 for j in range(len(newParams)):
                     param_tilde[i].loc['theta'][j] = newParams[j]
-            print "NEW PERTURBED PARTICLE"
+            print "NEW PARTICLE"
             print param_tilde[i]
             #print "when dist > epsilon, dummy, dummy"
-        # After generating a new particle... or passing a sucessful one, we generate a new weight for it.
+
 
     print "NOW WE ASSIGN NEW WEIGHTS"
     print "CURRENT WEIGHTS"
     print w
+    print "PASTWEIGHTS"
+    print wpast
     #calculate weight for all particles, if this is the first particle, then its weight is 1
     # I have backed this all down below the while loop... because both papers say we should update the thetas weights
     # all at once.
     wprep = w
     wnew = pd.Series([1/float(N_part)]*N_part)
     for k in range(N_part):
-        # Why is the first weight always 1?
-        if k == -1:
+        if t == -1:
             print "if"
-            wnew[k] = 1
+            w = pd.Series([1/float(N_part)]*N_part)
+            wpast = w
         # otherwise calculate the weight based on all of the existing weights, and all the past weights according to the
         # formula in the PNAS paper
         else:
@@ -284,13 +316,17 @@ for t in range(0, N_iter):
             print param
             print "paramSaved"
             print paramSaved
+            print "param_inputs?"
+            print param_inputs
             # Now we define weights based on prior weights, and all current shifts in weights and paramaters and the prior
             print "N_part"
             print N_part
             print "wnew"
             print wnew
+            print "particles failed culling"
+            print failed
             print k
-            wnew[k] = moo.weightt(N_part, w, wpast, param, paramSaved, k)
+            wnew[k] = moo.weightt(N_part, w, wpast, param, paramSaved, k, t)
 
     # Normalize the wieghts
     print "Before norm"
@@ -310,3 +346,14 @@ for t in range(0, N_iter):
 # Any great number of iterations causes a certain particle to run away with weight and overwrite the other particles.
 print param
 param.to_csv("ParticleTest.csv")
+oneToTwo = plt.figure()
+print "0-2"
+print pearsonr(param.loc['theta'].loc['theta0'],param.loc['theta'].loc['theta2'])
+print "0-3"
+print pearsonr(param.loc['theta'].loc['theta0'],param.loc['theta'].loc['theta3'])
+print "1-3"
+print pearsonr(param.loc['theta'].loc['theta1'],param.loc['theta'].loc['theta3'])
+print "2-3"
+print pearsonr(param.loc['theta'].loc['theta2'],param.loc['theta'].loc['theta3'])
+plt.plot(param.loc['theta'].loc['theta2'],param.loc['theta'].loc['theta3'],"o")
+pylab.show()

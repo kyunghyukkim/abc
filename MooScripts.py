@@ -107,13 +107,13 @@ def priorProb(Thet, means, sigmas):
 # a theta distribution, the previous theta distribution,
 # a perturbation function, and a proposal distribuiton to
 # create a new weighting vector for particles.
-def weightt(N, prevWeights, pastWeights, newThet, prevThet, i):
+def weightt(N, prevWeights, pastWeights, newThet, prevThet, i, t):
     #newWeights = []
     #for i in range(len(newThet)):
     sum = 0
     print prevThet
     for j in range(N):
-        bit = pastWeights[j] * PerturbationProb(newThet[i], prevThet[j], newThet, prevThet, prevWeights, pastWeights, N)
+        bit = pastWeights[j] * PerturbationProb(newThet[i], prevThet[j], newThet, prevThet, prevWeights, pastWeights, N, t)
         sum = sum + bit
     print "sum", i
     print sum
@@ -215,26 +215,52 @@ def PertSum(newThet, prevThet, newW, prevW, N):
 # ERROR: How do we define the single particle in these calculations that is different? Otherwise the sum will always be the same?
 # In both the Pert Sum and the prop calculation below we cycle through newThet but it should just be one value. Does PrevThet
 # Also just have one value?
-def PerturbationProb(newThet, prevThet, newThetWhole, prevThetWhole, newW, prevW, N):
+def PerturbationProb(newThet, prevThet, newThetWhole, prevThetWhole, newW, prevW, N, t):
     # newThet should be a particle in question
     # prevThet should be a particle to compare it to from a prior set of particles
+    print "newThet"
+    print newThet
+    print "prevThet"
+    print prevThet
+    print "newThetWhole"
+    print newThetWhole
+    print "prevThetWhole"
+    print prevThetWhole
+    print "newW"
+    print newW
+    print "prevW"
+    print prevW
+    print "N"
+    print N
     newParams = newThet.loc['theta']
+    prevParams = prevThet.loc['theta']
     d = len(newParams)
+    print "d"
+    print d
     calculatedSigmat = PertSum(newThetWhole, prevThetWhole, newW, prevW, N)
+    print "calculatedSigmat"
+    print calculatedSigmat
     #prop = ((2*3.14159)**(-d/2))*((numpy.linalg.det(calculatedSigmat))**(-0.5))*numpy.exp(-0.5*numpy.transpose((newThet-prevThet))*calculatedSigmat^(-1)*(newThet-prevThet))
-    matrixStuff = ((newParams-prevThet.loc['theta']))
-
+    matrixStuff = ((newParams-prevParams))
+    print "matrix subtraction"
+    print matrixStuff
     arrayStuff = numpy.empty(d)
     for index in range(d):
         numpy.append(arrayStuff, matrixStuff[index]*calculatedSigmat**(-1))
-
+    print "matrix stuff times calculatedSigmat ^ -1"
+    print arrayStuff
     total = 0
     for jndex in range(d):
         total = total + arrayStuff[jndex] * (newParams-prevThet.loc['theta'])[jndex]
-
+    print "matrix multiplication"
+    print total
     prop = ((2*3.14159)**(-d/2))*((calculatedSigmat)**(-0.5))*numpy.exp(total)
     print "prop"
     print prop
+    print "cehck Math"
+    print t
+    #if(t == 1):
+        #exit(1)
     return prop
 
 # sigmaj produces the deviation for the Kpert function from the various statistical
