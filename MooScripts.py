@@ -81,10 +81,10 @@ def priorProbDep(param_input, Thet):
     return probProduct
 
 def priorProb(Thet, means, sigmas):
-    print Thet
+    #print Thet
     paramaters = Thet.loc['theta']
     probProduct = -1
-    print paramaters
+    #print paramaters
     for i in range(len(paramaters)):
         normal = scipy.stats.norm(means[i], sigmas[i])
         prob = scipy.stats.norm(means[i], sigmas[i]).pdf(paramaters[i])
@@ -94,12 +94,18 @@ def priorProb(Thet, means, sigmas):
         else:
             probProduct = probProduct * prob
 
-    print probProduct
+    #print probProduct
 
 
 
     return probProduct
 
+def normalizeConditional(x):
+    total = x.sum()
+    if (total == 0):
+        return x
+    else:
+        return x*len(x)/x.sum()
 
 
 # weightt (Weight Calculator) takes a tolerance counter value,
@@ -111,12 +117,12 @@ def weightt(N, prevWeights, pastWeights, newThet, prevThet, i, t):
     #newWeights = []
     #for i in range(len(newThet)):
     sum = 0
-    print prevThet
+    #print prevThet
     for j in range(N):
         bit = pastWeights[j] * PerturbationProb(newThet[i], prevThet[j], newThet, prevThet, prevWeights, pastWeights, N, t)
         sum = sum + bit
-    print "sum", i
-    print sum
+    #print "sum", i
+    #print sum
     weight = priorProb(newThet[i], [0.4, 1, 200, 0.01], [1, 2, 400, 1])/sum
     #numpy.append(newWeights, weight)
     return weight
@@ -138,21 +144,20 @@ def Kpert(t, N, sigj, pThet, pThetp):
 # Multi variate normal kernel without strict adherence to either PNAS or arxiv papers
 # Generates particles, not probabilities
 def PerturbationKernel(particles, N):
-
+    #print "in kernel"
     ThetaSet = particles.loc['theta']
-
+    #print "rowCount"
     rowCount = ThetaSet.shape[0]
     colCount = ThetaSet.shape[1]
 
     means = []
     index = 0
+    #print "While start"
     while index < rowCount:
         subjectParam = ThetaSet.iloc[[index]]
-        currentMean = numpy.mean(subjectParam.as_matrix())
+        currentMean = numpy.mean(subjectParam.iloc[0])
         means = numpy.append(means, currentMean)
-
         index += 1
-
         #CovarPrep = pandas.DataFrame([CovarPrep,subjectParam])
         #print "Building Covars..."
         #CovarPrep[label] = subjectParam
@@ -161,20 +166,15 @@ def PerturbationKernel(particles, N):
 
     windex = 0
     results = pandas.DataFrame()
+    #print "windex start"
     while windex < N:
 
         result = numpy.random.multivariate_normal(means, Covar)
         results[windex] = result
         windex += 1
-
-    print "There should be", N, "results"
-    print "Viewing Results..."
-    print results
     for i in range(N):
-        print results[i]
         particle = results[i]
         for j in range(len(results)):
-            print particle[j]
             paramater = particle[j]
             if (paramater < 0):
                 results[i][j] = results[i][j] * -1
@@ -218,47 +218,19 @@ def PertSum(newThet, prevThet, newW, prevW, N):
 def PerturbationProb(newThet, prevThet, newThetWhole, prevThetWhole, newW, prevW, N, t):
     # newThet should be a particle in question
     # prevThet should be a particle to compare it to from a prior set of particles
-    print "newThet"
-    print newThet
-    print "prevThet"
-    print prevThet
-    print "newThetWhole"
-    print newThetWhole
-    print "prevThetWhole"
-    print prevThetWhole
-    print "newW"
-    print newW
-    print "prevW"
-    print prevW
-    print "N"
-    print N
     newParams = newThet.loc['theta']
     prevParams = prevThet.loc['theta']
     d = len(newParams)
-    print "d"
-    print d
     calculatedSigmat = PertSum(newThetWhole, prevThetWhole, newW, prevW, N)
-    print "calculatedSigmat"
-    print calculatedSigmat
     #prop = ((2*3.14159)**(-d/2))*((numpy.linalg.det(calculatedSigmat))**(-0.5))*numpy.exp(-0.5*numpy.transpose((newThet-prevThet))*calculatedSigmat^(-1)*(newThet-prevThet))
     matrixStuff = ((newParams-prevParams))
-    print "matrix subtraction"
-    print matrixStuff
     arrayStuff = numpy.empty(d)
     for index in range(d):
         numpy.append(arrayStuff, matrixStuff[index]*calculatedSigmat**(-1))
-    print "matrix stuff times calculatedSigmat ^ -1"
-    print arrayStuff
     total = 0
     for jndex in range(d):
         total = total + arrayStuff[jndex] * (newParams-prevThet.loc['theta'])[jndex]
-    print "matrix multiplication"
-    print total
     prop = ((2*3.14159)**(-d/2))*((calculatedSigmat)**(-0.5))*numpy.exp(total)
-    print "prop"
-    print prop
-    print "cehck Math"
-    print t
     #if(t == 1):
         #exit(1)
     return prop
@@ -286,10 +258,6 @@ def CumulativeDistribution(pThetp):
     ThetVals = numpy.histogram(pThetn, len(ThetBins))
     ThetBins = ThetVals[1]
     ThetUnits = numpy.array(ThetVals[0]).astype('float')
-    print 'bins'
-    print ThetBins
-    print 'vals'
-    print ThetUnits
     ThetProps = (1. * ThetUnits)/sum(ThetUnits)
     CumDist = numpy.cumsum(ThetProps)
     randbit =  round(numpy.random.rand(1,1),3)
@@ -339,30 +307,15 @@ def RejectionSampling(type = 'Box', var = 1, center = -666.666):
     elif (type == 'Normal'):
 
         g = lambda x: 1/numpy.sqrt(2*3.14159*var)*numpy.exp(-(x-center)**2/(2*var))
-        print("min MAX")
-        print(numpy.amin(range))
-        print(numpy.amax(range))
         bitrange = numpy.linspace(numpy.amin(range), numpy.amax(range), 100)
-        print("bitrange")
-        print(bitrange)
-        print("Normal Dist")
-        print (g(bitrange))
-        print(".all()?")
         pThetpall = []
         i = 0
-        print (len(bitrange))
         while i < len(bitrange):
             bite = (pThetp(bitrange[i]))
             pThetpall.append(bite)
             i = i + 1
-        print(pThetpall)
-        print("pThetp Dist")
-        print (pThetpall)
-        print("Scaling Factors?")
-        print (pThetpall/g(bitrange))
-        ScalingFactor = numpy.amax(pThetpall/g(bitrange))
-        print(ScalingFactor)
 
+        ScalingFactor = numpy.amax(pThetpall/g(bitrange))
         while index <= N:
 
             xval = numpy.random.uniform(numpy.amin(range), numpy.amax(range))
@@ -395,13 +348,7 @@ def GenerateCorrelate(alpha = 1, beta = -1, gamma = 2, delta = 3, N = 1000):
     y = [None]*N
     for i in range(0,len(x)):
         y[i] = numpy.random.normal(beta*x[i], delta, 1)[0]
-    print "For Out"
-    print x
-    print y
     primaryDist = pandas.DataFrame({'x':x, 'y':y})
-
-    print "Data Frame"
-    print primaryDist
 
     ofile = open('TestCell.csv', "wb")
     writer = csv.writer(ofile, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
@@ -458,14 +405,14 @@ def input_to_df(input_str, N_Species, N_param):
         Sinit_index_name.append('S' + str(x))
 
     Sinit = pandas.DataFrame(map(int, input_list[0:N_Species]), index = Sinit_index_name, dtype='object')
-    print "Initial Species copy numbers used in the simulation algorithm\n", Sinit
+    #print "Initial Species copy numbers used in the simulation algorithm\n", Sinit
 
     theta = pandas.DataFrame(input_list[N_Species:N_Species + N_param], index = theta_index_name, dtype='object')
-    print "Initial theta values\n", theta
+    #print "Initial theta values\n", theta
 
     t_param = pandas.DataFrame(map(float, [input_list[N_Species + N_param]]), index = ['delt'], dtype='object')
     t_param.loc['N_time']=map(int, [input_list[N_Species + N_param+1]])
-    print "Simulation time parameters\n", t_param
+    #print "Simulation time parameters\n", t_param
     dict = {'Sinit': Sinit, 'theta': theta, 't_param': t_param}
     df = pandas.concat(dict)
     return df

@@ -60,7 +60,7 @@ bool  MC_not_finished(std::stringstream& str);
 // std::ofstream FILE_TEVOL;
 // std::ofstream FILE_FLUX;
 
-
+std::ofstream bitFile;
 
 
 
@@ -68,19 +68,19 @@ bool  MC_not_finished(std::stringstream& str);
 char * gillespie(char *str)
 {
 
-   cout << "Gillespie Lives\n";
-   
+   //cout << "Gillespie Lives\n";
+   bitFile.open ("CtoPy.csv");
 	std::stringstream STR_OUTPUT;
 	
-   cout << "Model_def in\n";
+   //cout << "Model_def in\n";
    
 	model_def(str, STR_OUTPUT);
    
-   cout << "From model_def tp time_evol\n";
+   //cout << "From model_def tp time_evol\n";
    
 	time_evol(STR_OUTPUT);
    
-   cout << "time_evol escaped\n";
+   //cout << "time_evol escaped\n";
 	
 	const std::string& tmp = STR_OUTPUT.str();
 	STR_OUTPUT.str("");
@@ -94,11 +94,9 @@ char * gillespie(char *str)
 		cstr2[i] = cstr[i];
 		i++;
 	}
-      
-   cout << "cstr2\n";
-   cout << cstr2;
-   cout << "\n";    
     
+   bitFile.close();
+   
 	return cstr2;
 	//return cstr;
 }
@@ -182,12 +180,12 @@ void propensity(void)
 void time_evol(std::stringstream& STR_OUTPUT)
 {
 
-   cout << "time_evol intimate\n";
+   //cout << "time_evol intimate\n";
 	
 	init_genrand(time(NULL)+genrand_int32());
 	init_state();
 	
-   cout << "initialization complete\n";
+   //cout << "initialization complete\n";
 
 	//STR_OUTPUT << std::endl;	
 	//STR_OUTPUT << "Time" << " ";
@@ -196,7 +194,7 @@ void time_evol(std::stringstream& STR_OUTPUT)
 	//}
 	//STR_OUTPUT << std::endl;	
    
-   cout << "MC_not_finished in\n";
+   //cout << "MC_not_finished in\n";
 	while(INDEX_GRID < NGRID_BF_STEADY )  MC_not_finished(STR_OUTPUT);
 }
 
@@ -225,14 +223,24 @@ bool  MC_not_finished(std::stringstream& STR_OUTPUT)
       sprintf(myChar, "%lf", INBETWEEN);
       STR_OUTPUT << myChar << " ";
       
+
+         bitFile << myChar << ",";
+
+      
 		for(i=1;i<=NUM_SPEC;i++){
 			STR_OUTPUT << S[i] << " ";
+         
+         bitFile << S[i] << ",";
 		}
+      
+      bitFile << "\n";
 		
 		STR_OUTPUT << std::endl;
 		
 		if(++INDEX_GRID>NGRID_BF_STEADY) return 0;
 	}
+   
+   
    
 	//If reaction is not finished, do update. otherwise leave it unchanged.
 	rand=genrand_real3();

@@ -141,9 +141,21 @@ def select_particles(w, n):
 
 
 #initial_particles([0,10,100,4], 10)
-
-def epsilon_next(epsilon):
-    return epsilon
+# Returns an epsilon higher or lower by an order of magnitude or an order of half depending on how many particles failed
+# The last test relative to the total number of particles.
+def epsilon_next(epsilon, failed, N):
+    if (failed > 3*N):
+        if (failed > 7*N):
+            return epsilon*1.01
+        else:
+            return epsilon
+    else:
+        if (failed > (N - 1)):
+            return epsilon
+        elif (failed > N/2):
+            return epsilon/1.05
+        else:
+            return epsilon/1.05
 
 def kernel(theta):
 

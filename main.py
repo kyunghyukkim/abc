@@ -1,5 +1,6 @@
 import MooScripts as moo
 import KimScripts as kim
+import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import pylab
@@ -16,7 +17,7 @@ lib.gillespie.restype = c_char_p
 # This data should be compared to the experimental x data to determine the correctness of any given particle
 # Ref PNAS --> PRC2.1 "Generate a data set x** ~ f (x|theta)"
 def simulate(param, i = 0):
-    #print "BEGINNING SIMULATION OF:", param
+    print "BEGINNING SIMULATION OF:", param
     # N_Species is the number of total species being considered. Sinit is the intial value of each specie
     N_Species = len(param.loc['Sinit'])
     # N_param is the number of parameters we are tracking each of which is evaluated in the theta part of the particle
@@ -29,10 +30,15 @@ def simulate(param, i = 0):
 
     # param_str is now created as a single string representation of a single particle
     param_str = ' '.join([Sinit_str, theta_str, t_param_str])
-    #print param_str
-
+    print param_str
+    print theta_str
+    param_num = theta_str.count(' ') + 1
     # Here we actually call the simulation script which skips through a python proxy to the C++ script one_trajectory
-    y = pd.read_table(StringIO(kim.ssa(param_str)), skiprows=0, nrows=5000, sep=" ", usecols = range(0,N_Species + 1))
+    #y = pd.read_table(StringIO(kim.ssa(param_str)), skiprows=0, nrows=5000, sep=" ", usecols = range(0,N_Species + 1))
+    print "Into hell"
+    kim.ssa(param_str)
+    print "Out of hell"
+    y = pd.read_csv("CtoPy.csv").ix[:,0:param_num]
     #print "Result is:", y
 
     # Establish a array for column names and ensure that the first one is Time because we will need to manually implement that column
@@ -78,6 +84,7 @@ def input_to_df(input_str, N_Species, N_param):
     print "Simulation time parameters\n", t_param
     dict = {'Sinit': Sinit, 'theta': theta, 't_param': t_param}
     df = pd.concat(dict)
+    print "escape"
     return df
     # return {'Sinit':Sinit, 'theta':theta, 't_param':t_param}
 
@@ -98,41 +105,66 @@ def input_to_df(input_str, N_Species, N_param):
 # The last param: Number of data points.
 
 # Simulation parameter initialization
-# Here we manually generate an initial paramater particle style dataframe
+# Here we manually generate an initial paramater particle style dataframe'
 print "ONE TEST --------------------------------------------------------------"
-N_Species = 3
-N_param = 4
+#N_Species = 3
+N_Species = 1
+#N_param = 4
+N_param = 2
 
 # Define Each paramaters physical meaning when compared to the simulation program
-param_input1 = input_to_df("10 0 100 0.4 0.5 100 0.1 0.02 10", N_Species, N_param)
+#param_input1 = input_to_df("10 0 100 0.4 0.5 100 0.01 0.01 1750", N_Species, N_param)
+param_input1 = input_to_df("10 0.4 0.5 0.01 1750", N_Species, N_param)
 
 print "THREE TEST --------------------------------------------------------------"
-param_input3 = input_to_df('10 0 100 0.4 4 400 1 0.02 10', N_Species, N_param)
+#param_input3 = input_to_df('10 0 100 0.4 4 400 1 0.01 1750', N_Species, N_param)
 
 param_input = param_input1
 
 # abc algorithm optimization initialization
-N_iter = 3
+N_iter = 25
 N_part = 10
+Sims = 50
 
 # synthetic experimental data
 print "TWO TEST --------------------------------------------------------------"
-param_input2 = input_to_df('10 0 100 0.4 1 200 0.01 0.02 10', N_Species, N_param)
+#param_input2 = input_to_df('10 0 100 0.4 1 200 0.01 0.01 1750', N_Species, N_param)
+param_input2 = input_to_df("10 0.4 1 0.01 1750", N_Species, N_param)
 
+meanTrack = []
+colorTrack = range(N_iter)
+for colorDex in range(N_iter):
+    colorTrack[colorDex] = 1 - (colorTrack[colorDex]/(N_iter*1.0))
+
+print "simulate?"
 x = simulate(param_input2)
+#start = np.array([0.4, 0.5, 100, 0.1])
+start = np.array([0.4, 0.5])
+#truth = np.array([0.4, 1, 200, 0.01])
+truth = np.array([0.4, 1])
+print "BEGIN"
+xset = []
+for xi in range(0, Sims):
+    xset.append(simulate(param_input2))
+
+
 
 # Now the PNAS process starts in earnest
 # input: a threshold epsilon
 # Ref PNAS --> PRC1
-epsilon = 0.5
+epsilon = 1200
+epsilonTrack = [epsilon]
 
+failed = N_part
 # Start the population indicator at 0 and let it run to the total number of allowed iterations
 for t in range(0, N_iter):
-
+    print "top of t=", t
     # later this function will update the tolerance to a lower value, for now it returns the same again
-    epsilon = kim.epsilon_next(epsilon)
-    print "t="
-    print t
+    epsilon = kim.epsilon_next(epsilon, failed, N_part)
+    epsilonTrack.append(epsilon)
+
+    #print "t="
+    #print t
 
     # on the first cycle, we will generate our initial particles from the starting particle
     # Ref PNAS --> PRC2.1 when t = 1
@@ -145,24 +177,24 @@ for t in range(0, N_iter):
         # Set all weights equally? Seems a little out of place but could be a fence case
         w = pd.Series([1/float(N_part)]*N_part)
         wpast = w
-        print "t=0"
-        print "INITIAL PARTICLES SELECTED"
-        print param_inputs
+        #print "t=0"
+        #print "INITIAL PARTICLES SELECTED"
+        #print param_inputs
         # print param_inputs
     # Otherwise we want to select some particles out of the previous set based on weights but with a random distribution
     # Then we want to use these selected particles to generate more particles using these selected according to the
     # perturbation kernel
     # Ref PNAS --> PRC2/1 when t > 0
     else:
-        print 't > 0'
+        #print 't > 0'
         prevThet = param
         num_selected = int( 0.75*len(param.columns) )
         num_not_selected = len(param.columns) - num_selected
-        print "num_selected = ", num_selected
+        #print "num_selected = ", num_selected
         # pick particles out of the bunch by weights in this case we don't pass actual particles in, just
         # the corresponding weights because the nature of the partcile does not affect the selection
         param_input_index_selected = kim.select_particles(w, num_selected)
-        print "num of the selected particles = ", len(param_input_index_selected)
+        #print "num of the selected particles = ", len(param_input_index_selected)
 
         temp = pd.DataFrame()
         # Now we build up temp, by appending each particle to it as they are selected by index
@@ -171,10 +203,10 @@ for t in range(0, N_iter):
             #print param_inputs[ind]
             temp[k] = param[ind]
 
-        print "Weights:"
-        print w
-        print "PARTICLES SELECTED"
-        print temp
+        #print "Weights:"
+        #print w
+        #print "PARTICLES SELECTED"
+        #print temp
 
         # This block seperates the paramaters and initial values out of the particle dataframe from for temp
         thetaTemp = temp.loc['theta']
@@ -184,11 +216,12 @@ for t in range(0, N_iter):
 
         # Now we generate new particles using the perturbation kernel (DO WE WANT TO USE PARAM OR TEMP?)
         offset = (N_part - len(param_input_index_selected))
-        print temp
-
+        #print temp
+        #print "dtype?"
+        #print "t = ", t
         newThetas = pd.DataFrame(moo.PerturbationKernel(temp, N_part))
         newThetas.index = thetaIndecies
-        print newThetas
+        #print newThetas
 
         for newThet in range(N_part):
 
@@ -197,10 +230,14 @@ for t in range(0, N_iter):
             thetaTemp[newThet] = newThetas.iloc[:,newThet]
 
         perturbSave = temp.copy()
+        print perturbSave
+        print "Pause"
+        #pause = plt.figure()
+        #pylab.show()
         dict = {'Sinit': topSinit, 'theta': thetaTemp, 't_param': topTParam}
         temp = pd.concat(dict)
-        print "PERTURBATION COMPLETE, RESULT:"
-        print temp
+        #print "PERTURBATION COMPLETE, RESULT:"
+        #print temp
         paramSaved = temp.copy()
         param_tilde = temp.copy()
         #param_inputs = perturbed according to a transition kernel K
@@ -210,51 +247,114 @@ for t in range(0, N_iter):
     # in temp or param?
     # Ref PNAS --> PRC2.1 Generate a data set and If p(S(x**)) both
 
-    print "param BEFORE IT ALL WAS UNDONE ----------------------------------------------"
-    print param
-    print "paramSaved"
-    print paramSaved
-    print "param_inputs?"
-    print param_inputs
+    #print "param BEFORE IT ALL WAS UNDONE ----------------------------------------------"
+    #print param
+    #print "paramSaved"
+    #print paramSaved
+    #print "param_inputs?"
+    #print param_inputs
 
-    print "NOW WE BEGIN THE CULLING BASED ON SIMULATION COMPARISON"
+    #print "NOW WE BEGIN THE CULLING BASED ON SIMULATION COMPARISON"
     i = 0
     # for each particle
     failed = 0
     while (i < N_part):
-        print "i=", i
+        print "--------------------------"
+        print "top of i=", i, "and t=", t
 
         # Run the simulation as detailed on the top of this python file and in the one_trajectory C++ script
-        print "PARTICLES WE HAVE NOW"
-        print param_tilde
-        print "param"
-        print param
+        #print "PARTICLES WE HAVE NOW"
+        #print param_tilde
+        #print "param"
+        #print param
         y = simulate(pd.DataFrame(param_tilde[i]), i)
+        yset = []
+        for yi in range(0, Sims):
+            yset.append(simulate(pd.DataFrame(param_tilde[i]), i))
+        #print "yset"
+        #print yset
+        #print "y"
+        #print y
+        #print "DONE"
+        #print yset[1]
         #print "SIMULATE OUT"
         #print y.head()
         # Normalize all the data points in x and y based on their max values. This is to remove any order of magnitude
         # issues between the expirimental and predicted data.
-        x_norm = x.apply(lambda x: x*len(x)/x.sum())
-        #print "x_norm"
+        x_norm = x.apply(moo.normalizeConditional)
+        #print "xnorm"
         #print x_norm
 
-        y_norm = y.apply(lambda y: y*len(y)/y.sum())
-        #print "y_norm"
+        #xset_norm = xset.apply(moo.normalizeConditional)
+        #xset_norm = list(map(moo.normalizeConditional, xset))
+        xset_norm = [bitx.apply(moo.normalizeConditional) for bitx in xset]
+        #for xni in range(0, Sims):
+            #xset_norm.append(xset[xni].apply(moo.normalizeConditional))
+
+        y_norm = y.apply(moo.normalizeConditional)
+        #print "ynorm"
         #print y_norm
 
-        num_elements = len(x_norm.columns)*len(x_norm.index)
+        #yset_norm = yset.apply(moo.normalizeConditional)
+        #yset_norm = list(map(moo.normalizeConditional, yset))
+        yset_norm = [bity.apply(moo.normalizeConditional) for bity in yset]
+        #yset_norm = []
+        #for yni in range(0, Sims):
+        #    yset_norm.append(yset[yni].apply(moo.normalizeConditional))
 
+        #print "yset_norm"
+        #print yset_norm
+        #print "xset_norm"
+        #print xset_norm
+
+        print "failed = ", failed
+
+        #print "xset_norm[1]"
+        #print xset_norm[1]
+        #print "x_norm"
+        #print x_norm
+        num_elements = len(xset_norm[1].columns)*len(xset_norm[1].index)
+        #num_elements = len(x_norm.columns)*len(x_norm.index)
+        #print "num_elements"
+        #print num_elements
+
+        set_elements = len(xset_norm[1].columns)*len(xset_norm[1].index)
+        #set_elements = len(x_norm.columns)*len(x_norm.index)
+        #print "set_elements"
+        #print set_elements
+
+        #print "difference"
+        #print (x_norm-y_norm)
+
+        #exit(1)
+
+        setDiffWhole = 0
+        for yyi in range(0, Sims):
+            #for yyi in range(0, Sims):
+            tempDiff = [(bitnx - yset_norm[yyi]) for bitnx in xset_norm]
+            setDiffWhole = setDiffWhole + sum(bitcx.apply(lambda x:x**2).sum().sum() for bitcx in tempDiff)
+
+                #setDiffWhole = setDiffWhole + (xset_norm[xxi]-yset_norm[xxi]).apply(lambda x:x**2).sum().sum()
+        setDiffWhole = setDiffWhole/Sims**2
         # Set a new temp (Ovewrwriting the one generated above?) which represents the first step to the distance function
         # recording the errors
         distanceWhole = (x_norm-y_norm).apply(lambda x:x**2).sum().sum()
-        print "distanceWhole"
-        print distanceWhole
-        distance = distanceWhole/float(num_elements)**0.5
-        print "distance for particle", i , "=", distance
-        print "epsilon is,", epsilon
+        #print "distanceWhole"
+        #print distanceWhole
 
+        #print "setDiffWhole"
+        #print setDiffWhole
+
+        distance = distanceWhole/float(num_elements)**0.5
+        setDistance = setDiffWhole/float(num_elements)**0.5
+        print "within t=", t
+        print "distance for particle", i , "=", distance
+        print "distance for set particle", i, "=", setDistance
+        print "epsilon is,", epsilon
+        #if (t == 3):
+            #exit(1)
         # If the distance it below tolerance its a good particle and we will save it to the param set.
-        if distance <= epsilon:
+        if setDistance <= epsilon:
 
             print "PARTICLE", i, "PASSED"
             param[i] = param_tilde[i]
@@ -271,31 +371,46 @@ for t in range(0, N_iter):
 
             print "PARTICLE", i, "FAILED"
             failed = failed + 1
-            print i
-            print t
-            print "param_tilde"
-            print param_tilde
+            if failed > N_part*50:
+                print "Particles failed exceeds particle number times 50, consider relaxing epsilon or speed of epsilon decrease."
+                print param_tilde
+                print param
+                epsilon = epsilon * 1.025
+                failed = 0
+                #exit(1)
+            #print i
+            #print t
+            #print "param_tilde"
+            #print param_tilde
             if (t == 0):
                 param_tilde[i] = kim.initial_particles(param_input, 1)
             else:
                 # generate a new param_input
                 # replace the below with a Kernel function
-                print "perturbSave"
-                print perturbSave
+                #print "perturbSave"
+                #print perturbSave
                 newParams = moo.PerturbationKernel(perturbSave, 1)
                 newParams = newParams[0]
                 for j in range(len(newParams)):
                     param_tilde[i].loc['theta'][j] = newParams[j]
-            print "NEW PARTICLE"
-            print param_tilde[i]
+        print "-----------"
+            #print "NEW PARTICLE"
+            #print param_tilde[i]
             #print "when dist > epsilon, dummy, dummy"
 
+    theta0i = param.loc['theta'].loc['theta0'].tolist()
+    theta1i = param.loc['theta'].loc['theta1'].tolist()
+    #theta2i = param.loc['theta'].loc['theta2'].tolist()
+    #theta3i = param.loc['theta'].loc['theta3'].tolist()
+    #mean = np.array([np.mean(theta0i), np.mean(theta1i), np.mean(theta2i), np.mean(theta3i)])
+    mean = np.array([np.mean(theta0i), np.mean(theta1i)])
+    meanTrack.append(mean)
 
-    print "NOW WE ASSIGN NEW WEIGHTS"
-    print "CURRENT WEIGHTS"
-    print w
-    print "PASTWEIGHTS"
-    print wpast
+    #print "NOW WE ASSIGN NEW WEIGHTS"
+    #print "CURRENT WEIGHTS"
+    #print w
+    #print "PASTWEIGHTS"
+    #print wpast
     #calculate weight for all particles, if this is the first particle, then its weight is 1
     # I have backed this all down below the while loop... because both papers say we should update the thetas weights
     # all at once.
@@ -303,37 +418,38 @@ for t in range(0, N_iter):
     wnew = pd.Series([1/float(N_part)]*N_part)
     for k in range(N_part):
         if t == -1:
-            print "if"
+            #print "if"
             w = pd.Series([1/float(N_part)]*N_part)
             wpast = w
         # otherwise calculate the weight based on all of the existing weights, and all the past weights according to the
         # formula in the PNAS paper
         else:
-            print "Weighting begins"
-            print "k"
-            print k
-            print "param"
-            print param
-            print "paramSaved"
-            print paramSaved
-            print "param_inputs?"
-            print param_inputs
+            print "top of k=", k
+            #print "Weighting begins"
+            #print "k"
+            #print k
+            #print "param"
+            #print param
+            #print "paramSaved"
+            #print paramSaved
+            #print "param_inputs?"
+            #print param_inputs
             # Now we define weights based on prior weights, and all current shifts in weights and paramaters and the prior
-            print "N_part"
-            print N_part
-            print "wnew"
-            print wnew
+            #print "N_part"
+            #print N_part
+            #print "wnew"
+            #print wnew
             print "particles failed culling"
             print failed
-            print k
+            #print k
             wnew[k] = moo.weightt(N_part, w, wpast, param, paramSaved, k, t)
 
     # Normalize the wieghts
-    print "Before norm"
-    print wnew
+    #print "Before norm"
+    #print wnew
     wnew = wnew/wnew.sum()
-    print "NEW WEIGHTS"
-    print wnew
+    #print "NEW WEIGHTS"
+    #print wnew
     wpast = wprep
     w = wnew
 # Having the first weight always be one massively corrupts the process resulting in the more iterations proceed
@@ -345,15 +461,152 @@ for t in range(0, N_iter):
 
 # Any great number of iterations causes a certain particle to run away with weight and overwrite the other particles.
 print param
+print epsilon
+
+print meanTrack
+
 param.to_csv("ParticleTest.csv")
-oneToTwo = plt.figure()
-print "0-2"
-print pearsonr(param.loc['theta'].loc['theta0'],param.loc['theta'].loc['theta2'])
-print "0-3"
-print pearsonr(param.loc['theta'].loc['theta0'],param.loc['theta'].loc['theta3'])
-print "1-3"
-print pearsonr(param.loc['theta'].loc['theta1'],param.loc['theta'].loc['theta3'])
-print "2-3"
-print pearsonr(param.loc['theta'].loc['theta2'],param.loc['theta'].loc['theta3'])
-plt.plot(param.loc['theta'].loc['theta2'],param.loc['theta'].loc['theta3'],"o")
+#exit(1)
+print "0-1"
+print pearsonr(param.loc['theta'].loc['theta0'].tolist(),param.loc['theta'].loc['theta1'].tolist())
+#print "0-2"
+#print pearsonr(param.loc['theta'].loc['theta0'].tolist(),param.loc['theta'].loc['theta2'].tolist())
+#print "0-3"
+#print pearsonr(param.loc['theta'].loc['theta0'].tolist(),param.loc['theta'].loc['theta3'].tolist())
+#print "1-3"
+#print pearsonr(param.loc['theta'].loc['theta1'].tolist(),param.loc['theta'].loc['theta3'].tolist())
+#print "2-3"
+#print pearsonr(param.loc['theta'].loc['theta2'].tolist(),param.loc['theta'].loc['theta3'].tolist())
+
+theta0 = param.loc['theta'].loc['theta0'].tolist()
+theta1 = param.loc['theta'].loc['theta1'].tolist()
+#theta2 = param.loc['theta'].loc['theta2'].tolist()
+#theta3 = param.loc['theta'].loc['theta3'].tolist()
+
+means = np.array([np.mean(theta0), np.mean(theta1)]) #, np.mean(theta2), np.mean(theta3)])
+
+Yzero = y['S0']
+#Yone = y['S1']
+#Ytwo = y['S2']
+
+TimeLine = x.index.values.tolist()
+Xzero = x['S0'].tolist()
+#Xone = x['S1'].tolist()
+#Xtwo = x['S2'].tolist()
+
+track = plt.figure()
+track1 = track.add_subplot(331)
+plt.plot(TimeLine, Xzero, "b")
+plt.xlabel("Time")
+plt.ylabel("Concentration Species 1")
+#plt.title("One_Trajectory")
+
+#track2 = track.add_subplot(332)
+#plt.plot(TimeLine, Xone, "g")
+#plt.xlabel("Time")
+#plt.ylabel("Concentration Species 2")
+#plt.title("One_Trajectory")
+
+#track3 = track.add_subplot(333)
+#plt.plot(TimeLine, Xtwo, "r")
+#plt.xlabel("Time")
+#plt.ylabel("Concentration Species 3")
+#plt.title("One_Trajectory")
+
+oneToTwo = track.add_subplot(334)
+plt.plot(param.loc['theta'].loc['theta0'],param.loc['theta'].loc['theta1'],"ob")
+for meani in range(N_iter):
+    meanBit = meanTrack[meani]
+    plt.plot(meanBit[0], meanBit[1], "o", color = str(colorTrack[meani]))
+plt.plot(truth[0], truth[1], "or")
+plt.plot(means[0], means[1], "og")
+plt.plot(start[0], start[1], "om")
+plt.xlabel("Paramater 0")
+plt.ylabel("Paramater 1")
+#plt.title("P0 vs P1")
+
+pylab.show()
+
+stats = plt.figure()
+plt.plot(range(N_iter + 1), epsilonTrack, "-r")
+plt.xlabel("iterations")
+plt.ylabel("epsilon value")
+pylab.show()
+
+exit(1)
+
+oneToThree = track.add_subplot(335)
+plt.plot(param.loc['theta'].loc['theta0'],param.loc['theta'].loc['theta2'],"ob")
+for meani in range(N_iter):
+    meanBit = meanTrack[meani]
+    plt.plot(meanBit[0], meanBit[2], "o", color = str(colorTrack[meani]))
+plt.plot(truth[0], truth[2], "or")
+plt.plot(means[0], means[2], "og")
+plt.plot(start[0], start[2], "om")
+plt.xlabel("Paramater 0")
+plt.ylabel("Paramater 2")
+#plt.title("P0 vs P2")
+
+oneToFour = track.add_subplot(336)
+plt.plot(param.loc['theta'].loc['theta0'],param.loc['theta'].loc['theta3'],"ob")
+for meani in range(N_iter):
+    meanBit = meanTrack[meani]
+    plt.plot(meanBit[0], meanBit[3], "o", color = str(colorTrack[meani]))
+plt.plot(truth[0], truth[3], "or")
+plt.plot(means[0], means[3], "og")
+plt.plot(start[0], start[3], "om")
+
+plt.xlabel("Paramater 0")
+plt.ylabel("Paramater 3")
+#plt.title("P0 vs P3")
+
+twoToThree = track.add_subplot(337)
+plt.plot(param.loc['theta'].loc['theta1'],param.loc['theta'].loc['theta2'],"ob")
+for meani in range(N_iter):
+    meanBit = meanTrack[meani]
+    plt.plot(meanBit[1], meanBit[2], "o", color = str(colorTrack[meani]))
+plt.plot(truth[1], truth[2], "or")
+plt.plot(means[1], means[2], "og")
+plt.plot(start[1], start[2], "om")
+plt.xlabel("Paramater 1")
+plt.ylabel("Paramater 2")
+#plt.title("P1 vs P2")
+
+twoToFour = track.add_subplot(338)
+plt.plot(param.loc['theta'].loc['theta1'],param.loc['theta'].loc['theta3'],"ob")
+for meani in range(N_iter):
+    meanBit = meanTrack[meani]
+    plt.plot(meanBit[1], meanBit[3], "o", color = str(colorTrack[meani]))
+plt.plot(truth[1], truth[3], "or")
+plt.plot(means[1], means[3], "og")
+plt.plot(start[1], start[3], "om")
+plt.xlabel("Paramater 1")
+plt.ylabel("Paramater 3")
+#plt.title("P1 vs P3")
+
+
+threeToFour = track.add_subplot(339)
+plt.plot(param.loc['theta'].loc['theta2'],param.loc['theta'].loc['theta3'],"ob")
+for meani in range(N_iter):
+    meanBit = meanTrack[meani]
+    plt.plot(meanBit[2], meanBit[3], "o", color = str(colorTrack[meani]))
+plt.plot(truth[2], truth[3], "or")
+plt.plot(means[2], means[3], "og")
+plt.plot(start[2], start[3], "om")
+plt.xlabel("Paramater 2")
+plt.ylabel("Paramater 3")
+#plt.title("P2 vs P3")
+
+print "Blue = Generated Particles"
+print "Green = Generated Average"
+print "Grayscale = Generated averages over time white -> black"
+print "Magenta = Initial Particles"
+print "Red = True Values"
+
+pylab.show()
+
+stats = plt.figure()
+plt.plot(range(N_iter + 1), epsilonTrack, "-r")
+plt.xlabel("iterations")
+plt.ylabel("epsilon value")
 pylab.show()
