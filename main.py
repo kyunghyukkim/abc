@@ -51,7 +51,7 @@ def simulate(param, i = 0):
     y = y.set_index(['Time'])
 
 
-    y = y.iloc[0:-2] # Somehow the last time point becomes corrupted with NaN and other special characters.
+    # y = y.iloc[0:-2] # Somehow the last time point becomes corrupted with NaN and other special characters.
     # make sure the bits that we want to be integer data type become that.
     for col in column_name[1:]:
         y[col] = y[col].apply(int)
@@ -129,8 +129,9 @@ Sims = 50
 # synthetic experimental data
 print "TWO TEST --------------------------------------------------------------"
 #param_input2 = input_to_df('10 0 100 0.4 1 200 0.01 0.01 1750', N_Species, N_param)
-param_input2 = input_to_df("10 0.4 1 0.01 1750", N_Species, N_param)
+param_input2 = input_to_df("50 100 1 0.1 2000", N_Species, N_param)
 
+# tack the mean values of parameters among particles at given iteration points.
 meanTrack = []
 colorTrack = range(N_iter)
 for colorDex in range(N_iter):
@@ -138,17 +139,22 @@ for colorDex in range(N_iter):
 
 print "simulate?"
 x = simulate(param_input2)
+
+#used for plotting the meanTrack
 #start = np.array([0.4, 0.5, 100, 0.1])
 start = np.array([0.4, 0.5])
 #truth = np.array([0.4, 1, 200, 0.01])
 truth = np.array([0.4, 1])
 print "BEGIN"
+
+# real synthetic data generated (# = Sims)
 xset = []
 for xi in range(0, Sims):
     xset.append(simulate(param_input2))
 
 
-
+# epsilon changes over iteration. 
+# epsilon (iteration) is plotted.
 # Now the PNAS process starts in earnest
 # input: a threshold epsilon
 # Ref PNAS --> PRC1
@@ -159,7 +165,6 @@ failed = N_part
 # Start the population indicator at 0 and let it run to the total number of allowed iterations
 for t in range(0, N_iter):
     print "top of t=", t
-    # later this function will update the tolerance to a lower value, for now it returns the same again
     epsilon = kim.epsilon_next(epsilon, failed, N_part)
     epsilonTrack.append(epsilon)
 
@@ -214,11 +219,14 @@ for t in range(0, N_iter):
         topTParam = temp.loc['t_param']
         thetaIndecies =  list(thetaTemp.index)
 
-        # Now we generate new particles using the perturbation kernel (DO WE WANT TO USE PARAM OR TEMP?)
+        # Now we generate new particles using the perturbation kernel
+        # Number of particles not selected
         offset = (N_part - len(param_input_index_selected))
         #print temp
         #print "dtype?"
         #print "t = ", t
+        
+        # based on the 75% param sets, generate their statistics and generate 100% new params. 
         newThetas = pd.DataFrame(moo.PerturbationKernel(temp, N_part))
         newThetas.index = thetaIndecies
         #print newThetas
@@ -335,7 +343,7 @@ for t in range(0, N_iter):
             setDiffWhole = setDiffWhole + sum(bitcx.apply(lambda x:x**2).sum().sum() for bitcx in tempDiff)
 
                 #setDiffWhole = setDiffWhole + (xset_norm[xxi]-yset_norm[xxi]).apply(lambda x:x**2).sum().sum()
-        setDiffWhole = setDiffWhole/Sims**2
+        setDiffWhole = setDiffWhole/float(Sims**2)
         # Set a new temp (Ovewrwriting the one generated above?) which represents the first step to the distance function
         # recording the errors
         distanceWhole = (x_norm-y_norm).apply(lambda x:x**2).sum().sum()
