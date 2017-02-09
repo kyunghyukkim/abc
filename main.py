@@ -51,7 +51,7 @@ def simulate(param, i = 0):
     y = y.set_index(['Time'])
 
 
-    y = y.iloc[0:-2] # Somehow the last time point becomes corrupted with NaN and other special characters.
+    #y = y.iloc[0:-2] # Somehow the last time point becomes corrupted with NaN and other special characters.
     # make sure the bits that we want to be integer data type become that.
     for col in column_name[1:]:
         y[col] = y[col].apply(int)
@@ -152,7 +152,7 @@ for xi in range(0, Sims):
 # Now the PNAS process starts in earnest
 # input: a threshold epsilon
 # Ref PNAS --> PRC1
-epsilon = 1200
+epsilon = 200
 epsilonTrack = [epsilon]
 
 failed = N_part

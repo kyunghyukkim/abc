@@ -168,8 +168,13 @@ def PerturbationKernel(particles, N):
     results = pandas.DataFrame()
     #print "windex start"
     while windex < N:
-
+        print "means"
+        print means
+        print "Covar"
+        print Covar
         result = numpy.random.multivariate_normal(means, Covar)
+        print result
+        exit(1)
         results[windex] = result
         windex += 1
     for i in range(N):
