@@ -122,14 +122,14 @@ print "THREE TEST --------------------------------------------------------------
 param_input = param_input1
 
 # abc algorithm optimization initialization
-N_iter = 25
+N_iter = 10 #50
 N_part = 10
-Sims = 50
+Sims = 10 #50
 
 # synthetic experimental data
 print "TWO TEST --------------------------------------------------------------"
 #param_input2 = input_to_df('10 0 100 0.4 1 200 0.01 0.01 1750', N_Species, N_param)
-param_input2 = input_to_df("50 100 1 0.1 2000", N_Species, N_param)
+param_input2 = input_to_df("50 100 1 0.01 1750", N_Species, N_param)
 
 # tack the mean values of parameters among particles at given iteration points.
 meanTrack = []
@@ -158,7 +158,7 @@ for xi in range(0, Sims):
 # Now the PNAS process starts in earnest
 # input: a threshold epsilon
 # Ref PNAS --> PRC1
-epsilon = 200
+epsilon = 5
 epsilonTrack = [epsilon]
 
 failed = N_part
@@ -521,7 +521,7 @@ plt.ylabel("Concentration Species 1")
 #plt.ylabel("Concentration Species 3")
 #plt.title("One_Trajectory")
 
-oneToTwo = track.add_subplot(334)
+oneToTwo = track.add_subplot(339)
 plt.plot(param.loc['theta'].loc['theta0'],param.loc['theta'].loc['theta1'],"ob")
 for meani in range(N_iter):
     meanBit = meanTrack[meani]

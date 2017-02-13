@@ -151,6 +151,7 @@ def PerturbationKernel(particles, N):
     colCount = ThetaSet.shape[1]
 
     means = []
+    # Make means of set shape, change how you add means to it.
     index = 0
     #print "While start"
     while index < rowCount:
@@ -161,20 +162,19 @@ def PerturbationKernel(particles, N):
         #CovarPrep = pandas.DataFrame([CovarPrep,subjectParam])
         #print "Building Covars..."
         #CovarPrep[label] = subjectParam
-
+    print "ThetaSet"
+    print ThetaSet
     Covar = numpy.cov(ThetaSet)
 
     windex = 0
     results = pandas.DataFrame()
     #print "windex start"
     while windex < N:
-        print "means"
-        print means
-        print "Covar"
-        print Covar
-        result = numpy.random.multivariate_normal(means, Covar)
-        print result
-        exit(1)
+
+        meansl = [means[0], means[1]]
+        Covarl = [[Covar[0][0],Covar[0][1]],[Covar[1][0],Covar[1][1]]]
+
+        result = numpy.random.multivariate_normal(meansl, Covarl)
         results[windex] = result
         windex += 1
     for i in range(N):
@@ -183,8 +183,6 @@ def PerturbationKernel(particles, N):
             paramater = particle[j]
             if (paramater < 0):
                 results[i][j] = results[i][j] * -1
-
-
 
     print "Exiting Perturbation"
     return results
