@@ -127,6 +127,7 @@ param_input = param_input1
 N_iter = 25
 N_part = 20
 Sims = 5
+# Selects the number of slices in the time.
 Slices = 10
 
 # synthetic experimental data
@@ -159,6 +160,8 @@ print "BEGIN"
 xset = []
 for xi in range(0, Sims):
     xset.append(simulate(param_input2))
+
+# This generates the array of slice times for now
 timeStep = xset[1].index.values[2] - xset[1].index.values[1]
 timeMax = xset[1].index.values[-1]
 SliceArray = [0]
@@ -166,7 +169,6 @@ for slicei in range(Slices - 1):
     SliceArray.append(SliceArray[slicei] + timeMax/Slices)
 print xset[1].index.values
 print SliceArray
-exit(1)
 
 # epsilon changes over iteration. 
 # epsilon (iteration) is plotted.
@@ -402,6 +404,7 @@ for t in range(0, N_iter):
         print param_tilde[i]
 
         print "|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||"
+        # This stuff is all for printing purposes.
         ysetLength = len(yset)
         print "ysetLength"
         print ysetLength
@@ -520,6 +523,7 @@ for t in range(0, N_iter):
     plt.plot(start[0], start[1], "om")
     plt.xlabel("Paramater 0")
     plt.ylabel("Paramater 1")
+    # Comment out this if you want the script to stop showing a graph on each iteration
     pylab.show()
 
     #print "NOW WE ASSIGN NEW WEIGHTS"
