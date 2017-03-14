@@ -57,10 +57,10 @@ def initial_particles(param_input, n):
 
     # Select data marked as theta in the input dataframe
     theta = param_input.loc['theta']
-
     # Create a new dataframe indexed based on the input parameters
     df = pd.DataFrame(columns=range(0,n), index=theta.index, dtype='object')
-
+    #print theta.iloc[0][0]/10., "to", theta.iloc[0][0]*10
+    #print theta.iloc[1][0]/10., "to", theta.iloc[1][0]*10
     # For each element in a list of the parameters...
     for i,index in zip(range(0, len(theta)), theta.index.tolist()):
 
@@ -72,9 +72,15 @@ def initial_particles(param_input, n):
 
             # if the parameter is greater than zero..
             if theta.iloc[i][0] > 0:
-
+                randOrder = numpy.random.uniform(1,10,1)[0]
+                randBias = numpy.random.randint(2, size=1)[0]
+                if (randBias == 0):
+                    defOrder = 1.0/randOrder
+                else:
+                    defOrder = randOrder
+                df.set_value(index,col,theta.iloc[i][0]*defOrder)
                 # Set the value of that parameter equal to a randomly chosen number between an order of magintude in either direction
-                df.set_value(index, col, numpy.random.uniform(theta.iloc[i][0]/10.,theta.iloc[i][0]*10,1)[0])
+                #df.set_value(index, col, numpy.random.uniform(theta.iloc[i][0]/10.,theta.iloc[i][0]*10,1)[0])
             # Otherwise if it is already zero...
             else:
                 # Set the value of that parameter equal to a randomly chosen number very close to zero
@@ -143,19 +149,20 @@ def select_particles(w, n):
 #initial_particles([0,10,100,4], 10)
 # Returns an epsilon higher or lower by an order of magnitude or an order of half depending on how many particles failed
 # The last test relative to the total number of particles.
-def epsilon_next(epsilon, failed, N):
+def epsilon_next(epsilon, failed, N, distances):
+    # 3 times the number of particles or greater
     if (failed > 3*N):
-        if (failed > 7*N):
-            return epsilon*1.01
-        else:
-            return epsilon
+        return epsilon
     else:
+        # Between the number of particles to 3 times that number of particles.
         if (failed > (N - 1)):
             return epsilon
+        # Between half the number of particles and the number of particles.
         elif (failed > N/2):
             return epsilon/1.05
+        # Less than half the number of particles failed.
         else:
-            return epsilon/1.05
+            return numpy.mean(distances)
 
 def kernel(theta):
 

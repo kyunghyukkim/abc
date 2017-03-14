@@ -17,7 +17,7 @@ lib.gillespie.restype = c_char_p
 # This data should be compared to the experimental x data to determine the correctness of any given particle
 # Ref PNAS --> PRC2.1 "Generate a data set x** ~ f (x|theta)"
 def simulate(param, i = 0):
-    print "BEGINNING SIMULATION OF:", param
+    #print "BEGINNING SIMULATION OF:", param
     # N_Species is the number of total species being considered. Sinit is the intial value of each specie
     N_Species = len(param.loc['Sinit'])
     # N_param is the number of parameters we are tracking each of which is evaluated in the theta part of the particle
@@ -30,14 +30,14 @@ def simulate(param, i = 0):
 
     # param_str is now created as a single string representation of a single particle
     param_str = ' '.join([Sinit_str, theta_str, t_param_str])
-    print param_str
-    print theta_str
+    #print param_str
+    #print theta_str
     param_num = theta_str.count(' ') + 1
     # Here we actually call the simulation script which skips through a python proxy to the C++ script one_trajectory
     #y = pd.read_table(StringIO(kim.ssa(param_str)), skiprows=0, nrows=5000, sep=" ", usecols = range(0,N_Species + 1))
-    print "Into hell"
+    #print "Into hell"
     kim.ssa(param_str)
-    print "Out of hell"
+    #print "Out of hell"
     y = pd.read_csv("CtoPy.csv").ix[:,0:param_num]
     #print "Result is:", y
 
@@ -95,7 +95,8 @@ def input_to_df(input_str, N_Species, N_param):
     #     param_inputs.assign(i=pd.concat([Sinit, thetas[i], t_param]))
     # print param_inputs
 
-
+# Here are warning variable which will be set to true if things go wrong but are corrected for.
+WeightWarning = False
 
 # math model is defined in c codes. 
 # three species: init copy numbers = [10, 0, 100]
@@ -114,7 +115,8 @@ N_param = 2
 
 # Define Each paramaters physical meaning when compared to the simulation program
 #param_input1 = input_to_df("10 0 100 0.4 0.5 100 0.01 0.01 1750", N_Species, N_param)
-param_input1 = input_to_df("10 0.4 0.5 0.01 1750", N_Species, N_param)
+param_input1 = input_to_df("10 120 0.8 0.025 120", N_Species, N_param)
+#param_input1 = input_to_df("10 200 0.5 10 200", N_Species, N_param)
 
 print "THREE TEST --------------------------------------------------------------"
 #param_input3 = input_to_df('10 0 100 0.4 4 400 1 0.01 1750', N_Species, N_param)
@@ -122,14 +124,18 @@ print "THREE TEST --------------------------------------------------------------
 param_input = param_input1
 
 # abc algorithm optimization initialization
-N_iter = 10 #50
-N_part = 10
-Sims = 10 #50
+N_iter = 25
+N_part = 20
+Sims = 5
+Slices = 10
 
 # synthetic experimental data
 print "TWO TEST --------------------------------------------------------------"
 #param_input2 = input_to_df('10 0 100 0.4 1 200 0.01 0.01 1750', N_Species, N_param)
-param_input2 = input_to_df("50 100 1 0.01 1750", N_Species, N_param)
+#param_input2 = input_to_df("10 100 1 0.025 120", N_Species, N_param)
+#param_input2 = input_to_df("10 100 1 10 200", N_Species, N_param)
+
+param_input2 = input_to_df("10 100 1 0.025 120", N_Species, N_param)
 
 # tack the mean values of parameters among particles at given iteration points.
 meanTrack = []
@@ -140,32 +146,41 @@ for colorDex in range(N_iter):
 print "simulate?"
 x = simulate(param_input2)
 
-#used for plotting the meanTrack
+#used for plotting the meanTrack, and for weighting in priorProb
 #start = np.array([0.4, 0.5, 100, 0.1])
-start = np.array([0.4, 0.5])
+start = np.array([120, 0.8])
+# Making the sigmas too small can result in null weight values which crashes the system.
+sigmas = np.array([100, 700])
 #truth = np.array([0.4, 1, 200, 0.01])
-truth = np.array([0.4, 1])
+truth = np.array([100, 1])
 print "BEGIN"
 
 # real synthetic data generated (# = Sims)
 xset = []
 for xi in range(0, Sims):
     xset.append(simulate(param_input2))
-
+timeStep = xset[1].index.values[2] - xset[1].index.values[1]
+timeMax = xset[1].index.values[-1]
+SliceArray = [0]
+for slicei in range(Slices - 1):
+    SliceArray.append(SliceArray[slicei] + timeMax/Slices)
+print xset[1].index.values
+print SliceArray
+exit(1)
 
 # epsilon changes over iteration. 
 # epsilon (iteration) is plotted.
 # Now the PNAS process starts in earnest
 # input: a threshold epsilon
 # Ref PNAS --> PRC1
-epsilon = 5
+epsilon = 1500
 epsilonTrack = [epsilon]
-
+distanceArray = [-1]
 failed = N_part
 # Start the population indicator at 0 and let it run to the total number of allowed iterations
 for t in range(0, N_iter):
     print "top of t=", t
-    epsilon = kim.epsilon_next(epsilon, failed, N_part)
+    epsilon = kim.epsilon_next(epsilon, failed, N_part, distanceArray)
     epsilonTrack.append(epsilon)
 
     #print "t="
@@ -176,16 +191,24 @@ for t in range(0, N_iter):
     if t == 0:
         #param_inputs = pd.Series([None] * N_part)
         param_inputs = kim.initial_particles(param_input, N_part)
+        #print param_inputs
+        #smack = plt.figure()
+        #pylab.show()
         param_tilde = param_inputs.copy()
         paramSaved = param_inputs.copy()
         param = pd.DataFrame()
         # Set all weights equally? Seems a little out of place but could be a fence case
         w = pd.Series([1/float(N_part)]*N_part)
         wpast = w
-        #print "t=0"
+        initParam = plt.figure()
+        plt.plot(param_inputs.loc['theta'].loc['theta0'],param_inputs.loc['theta'].loc['theta1'],"ob")
+        plt.plot(truth[0], truth[1], "or")
+        plt.plot(start[0], start[1], "om")
+        plt.xlabel("Paramater 0")
+        plt.ylabel("Paramater 1")
+        pylab.show()
         #print "INITIAL PARTICLES SELECTED"
         #print param_inputs
-        # print param_inputs
     # Otherwise we want to select some particles out of the previous set based on weights but with a random distribution
     # Then we want to use these selected particles to generate more particles using these selected according to the
     # perturbation kernel
@@ -198,22 +221,29 @@ for t in range(0, N_iter):
         #print "num_selected = ", num_selected
         # pick particles out of the bunch by weights in this case we don't pass actual particles in, just
         # the corresponding weights because the nature of the partcile does not affect the selection
+        print "inputs"
+        print w
+        print num_selected
         param_input_index_selected = kim.select_particles(w, num_selected)
         #print "num of the selected particles = ", len(param_input_index_selected)
-
+        print "param"
+        print param
         temp = pd.DataFrame()
         # Now we build up temp, by appending each particle to it as they are selected by index
+        print "?"
+        print param_input_index_selected
+        print zip(param_input_index_selected, range(0, len(param_input_index_selected)))
         for ind, k in zip(param_input_index_selected, range(0, len(param_input_index_selected))):
             #print "ind= ", ind, "k=", k
-            #print param_inputs[ind]
             temp[k] = param[ind]
 
         #print "Weights:"
         #print w
-        #print "PARTICLES SELECTED"
+        print "PARTICLES SELECTED"
         #print temp
 
         # This block seperates the paramaters and initial values out of the particle dataframe from for temp
+        print temp
         thetaTemp = temp.loc['theta']
         topSinit = temp.loc['Sinit']
         topTParam = temp.loc['t_param']
@@ -266,7 +296,9 @@ for t in range(0, N_iter):
     i = 0
     # for each particle
     failed = 0
+    distanceArray = []
     while (i < N_part):
+
         print "--------------------------"
         print "top of i=", i, "and t=", t
 
@@ -277,8 +309,11 @@ for t in range(0, N_iter):
         #print param
         y = simulate(pd.DataFrame(param_tilde[i]), i)
         yset = []
+        print "simulating..."
         for yi in range(0, Sims):
             yset.append(simulate(pd.DataFrame(param_tilde[i]), i))
+        print "simulated"
+
         #print "yset"
         #print yset
         #print "y"
@@ -293,9 +328,8 @@ for t in range(0, N_iter):
         #print "xnorm"
         #print x_norm
 
-        #xset_norm = xset.apply(moo.normalizeConditional)
-        #xset_norm = list(map(moo.normalizeConditional, xset))
-        xset_norm = [bitx.apply(moo.normalizeConditional) for bitx in xset]
+        xset_norm = xset
+        ##xset_norm = [bitx.apply(moo.normalizeConditional) for bitx in xset]
         #for xni in range(0, Sims):
             #xset_norm.append(xset[xni].apply(moo.normalizeConditional))
 
@@ -303,18 +337,14 @@ for t in range(0, N_iter):
         #print "ynorm"
         #print y_norm
 
-        #yset_norm = yset.apply(moo.normalizeConditional)
-        #yset_norm = list(map(moo.normalizeConditional, yset))
-        yset_norm = [bity.apply(moo.normalizeConditional) for bity in yset]
-        #yset_norm = []
-        #for yni in range(0, Sims):
-        #    yset_norm.append(yset[yni].apply(moo.normalizeConditional))
+        yset_norm = yset
+        ##yset_norm = [bity.apply(moo.normalizeConditional) for bity in yset]
 
         #print "yset_norm"
         #print yset_norm
         #print "xset_norm"
         #print xset_norm
-
+        print "t = ", t
         print "failed = ", failed
 
         #print "xset_norm[1]"
@@ -337,13 +367,20 @@ for t in range(0, N_iter):
         #exit(1)
 
         setDiffWhole = 0
+        print "xset_norm[1] - yset_norm[1]"
+        print xset_norm[1] - yset_norm[1]
+        print "comparing..."
         for yyi in range(0, Sims):
             #for yyi in range(0, Sims):
-            tempDiff = [(bitnx - yset_norm[yyi]) for bitnx in xset_norm]
-            setDiffWhole = setDiffWhole + sum(bitcx.apply(lambda x:x**2).sum().sum() for bitcx in tempDiff)
-
+            #tempDiff = [np.absolute(bitnx - yset_norm[yyi]) for bitnx in xset_norm]
+            tempDiff = ((xset_norm[yyi] - yset_norm[yyi])**2).sum()
+            print "tempDiff"
+            print tempDiff
+            #setDiffWhole = setDiffWhole + sum(bitcx.apply(lambda x:x**2).sum().sum() for bitcx in tempDiff)
+            setDiffWhole = setDiffWhole + tempDiff
+        print "compared."
                 #setDiffWhole = setDiffWhole + (xset_norm[xxi]-yset_norm[xxi]).apply(lambda x:x**2).sum().sum()
-        setDiffWhole = setDiffWhole/float(Sims**2)
+        setDistance = setDiffWhole.iloc[0]**0.5
         # Set a new temp (Ovewrwriting the one generated above?) which represents the first step to the distance function
         # recording the errors
         distanceWhole = (x_norm-y_norm).apply(lambda x:x**2).sum().sum()
@@ -353,16 +390,78 @@ for t in range(0, N_iter):
         #print "setDiffWhole"
         #print setDiffWhole
 
-        distance = distanceWhole/float(num_elements)**0.5
-        setDistance = setDiffWhole/float(num_elements)**0.5
+        print param_tilde[i]
+
+        #distance = distanceWhole/float(num_elements)**0.5
+        #setDistance = setDiffWhole/float(num_elements)**0.5
         print "within t=", t
-        print "distance for particle", i , "=", distance
+        #print "distance for particle", i , "=", distance
         print "distance for set particle", i, "=", setDistance
         print "epsilon is,", epsilon
+        print "particle"
+        print param_tilde[i]
+
+        print "|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||"
+        ysetLength = len(yset)
+        print "ysetLength"
+        print ysetLength
+
+
+        #TimeLiney = y.index.values.tolist()
+        TimeLiney = yset[1].index.values.tolist()
+        Yzerosum = [0]*len(TimeLiney)
+        fuckingThing = Yzerosum
+        for yin in range(ysetLength):
+            ybyte = yset[yin]
+            Yzerobyte = ybyte['S0'].tolist()
+            if (len(Yzerosum) > len(Yzerobyte)):
+                fuckingThing = Yzerobyte
+            for yin1 in range(len(fuckingThing)):
+                Yzerosum[yin1] = Yzerosum[yin1] + Yzerobyte [yin1]
+        Yzero = [float(yin2) / ysetLength for yin2 in Yzerosum]
+
+        #Yone = y['S1']
+        #Ytwo = y['S2']
+
+        xsetLength = len(xset)
+        print "xsetLength"
+        print xsetLength
+        #TimeLinex = x.index.values.tolist()
+        TimeLinex = xset[1].index.values.tolist()
+        Xzerosum = [0]*len(TimeLinex)
+        for xin in range(xsetLength):
+            xbyte = xset[xin]
+            Xzerobyte = xbyte['S0'].tolist()
+            for xin1 in range(len(Xzerosum)):
+                Xzerosum[xin1] = Xzerosum[xin1] + Xzerobyte [xin1]
+        Xzero = [float(xin2) / xsetLength for xin2 in Xzerosum]
+
+        timespace = np.linspace(0, 3, num = 120)
+        time0 = 10
+        c = time0 - truth[0]/truth[1]
+
+        amtspace = []
+        for sindex in range(len(timespace)):
+            bit = (c * np.exp(-truth[1]*timespace[sindex])) + truth[0]/truth[1]
+            amtspace.append(bit)
+
+
+        if t == 2:
+
+            track = plt.figure()
+            track1 = track.add_subplot(331)
+            plt.plot(TimeLinex, Xzero, "r", TimeLiney, Yzero, "g", timespace, amtspace, "r--")
+            plt.xlabel("Time")
+            plt.ylabel("Concentration Species 1")
+            plt.title("x/y trajectory")
+            pylab.show()
+        print "|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||"
+
+
         #if (t == 3):
             #exit(1)
         # If the distance it below tolerance its a good particle and we will save it to the param set.
-        if setDistance <= epsilon:
+        if np.absolute(setDistance) <= epsilon:
 
             print "PARTICLE", i, "PASSED"
             param[i] = param_tilde[i]
@@ -370,6 +469,7 @@ for t in range(0, N_iter):
                 ys = {0:y}
             else:
                 ys[i] = y
+            distanceArray.append(np.absolute(setDistance))
             # Increase the value of the particle counter, if the particle fails the distance test then we are no closer
             # to a new generation of promising particles.
             i = i + 1
@@ -414,6 +514,14 @@ for t in range(0, N_iter):
     mean = np.array([np.mean(theta0i), np.mean(theta1i)])
     meanTrack.append(mean)
 
+    iterParam = plt.figure()
+    plt.plot(param.loc['theta'].loc['theta0'],param.loc['theta'].loc['theta1'],"ob")
+    plt.plot(truth[0], truth[1], "or")
+    plt.plot(start[0], start[1], "om")
+    plt.xlabel("Paramater 0")
+    plt.ylabel("Paramater 1")
+    pylab.show()
+
     #print "NOW WE ASSIGN NEW WEIGHTS"
     #print "CURRENT WEIGHTS"
     #print w
@@ -432,7 +540,7 @@ for t in range(0, N_iter):
         # otherwise calculate the weight based on all of the existing weights, and all the past weights according to the
         # formula in the PNAS paper
         else:
-            print "top of k=", k
+            #print "top of k=", k
             #print "Weighting begins"
             #print "k"
             #print k
@@ -447,15 +555,24 @@ for t in range(0, N_iter):
             #print N_part
             #print "wnew"
             #print wnew
-            print "particles failed culling"
-            print failed
             #print k
-            wnew[k] = moo.weightt(N_part, w, wpast, param, paramSaved, k, t)
+            wnew[k] = moo.weightt(N_part, w, wpast, param, paramSaved, k, t, start, sigmas)
+            #print wnew
+    print "particles failed culling"
+    print failed
 
     # Normalize the wieghts
-    #print "Before norm"
-    #print wnew
+    print "Before norm"
+    print wnew
     wnew = wnew/wnew.sum()
+    print "wnew"
+    print wnew
+    if wnew.sum() == 0:
+        print "WARNING: Weights near zero, sigma range must be widened or your prior set is too far off. Weights being reset to simple equal values"
+        WeightWarning = True
+        wnew = pd.Series([1/float(N_part)]*N_part)
+        exit(1)
+
     #print "NEW WEIGHTS"
     #print wnew
     wpast = wprep
@@ -493,21 +610,59 @@ theta1 = param.loc['theta'].loc['theta1'].tolist()
 
 means = np.array([np.mean(theta0), np.mean(theta1)]) #, np.mean(theta2), np.mean(theta3)])
 
-Yzero = y['S0']
+ysetLength = len(yset)
+print "ysetLength"
+print ysetLength
+#TimeLiney = y.index.values.tolist()
+TimeLiney = yset[1].index.values.tolist()
+Yzerosum = [0]*len(TimeLiney)
+for yin in range(ysetLength):
+    ybyte = yset[yin]
+    Yzerobyte = ybyte['S0'].tolist()
+    for yin1 in range(len(Yzerosum)):
+        Yzerosum[yin1] = Yzerosum[yin1] + Yzerobyte [yin1]
+Yzero = [float(yin2) / ysetLength for yin2 in Yzerosum]
+
 #Yone = y['S1']
 #Ytwo = y['S2']
 
-TimeLine = x.index.values.tolist()
-Xzero = x['S0'].tolist()
+xsetLength = len(xset)
+print "xsetLength"
+print xsetLength
+#TimeLinex = x.index.values.tolist()
+TimeLinex = xset[1].index.values.tolist()
+Xzerosum = [0]*len(TimeLinex)
+for xin in range(xsetLength):
+    xbyte = xset[xin]
+    Xzerobyte = xbyte['S0'].tolist()
+    for xin1 in range(len(Xzerosum)):
+        Xzerosum[xin1] = Xzerosum[xin1] + Xzerobyte [xin1]
+Xzero = [float(xin2) / xsetLength for xin2 in Xzerosum]
+
+print "YZERO"
+print Yzero
+
+print "Xzero"
+print Xzero
+
 #Xone = x['S1'].tolist()
 #Xtwo = x['S2'].tolist()
 
+timespace = np.linspace(0, 3, num = 120)
+time0 = 10
+c = time0 - truth[0]/truth[1]
+
+amtspace = []
+for i in range(len(timespace)):
+    bit = (c * np.exp(-truth[1]*timespace[i])) + truth[0]/truth[1]
+    amtspace.append(bit)
+
 track = plt.figure()
 track1 = track.add_subplot(331)
-plt.plot(TimeLine, Xzero, "b")
+plt.plot(TimeLinex, Xzero, "r", TimeLiney, Yzero, "g", timespace, amtspace, "r--")
 plt.xlabel("Time")
 plt.ylabel("Concentration Species 1")
-#plt.title("One_Trajectory")
+plt.title("x/y trajectory")
 
 #track2 = track.add_subplot(332)
 #plt.plot(TimeLine, Xone, "g")
@@ -618,3 +773,8 @@ plt.plot(range(N_iter + 1), epsilonTrack, "-r")
 plt.xlabel("iterations")
 plt.ylabel("epsilon value")
 pylab.show()
+
+print param
+
+if WeightWarning:
+    print "WARNING: Weights near zero, sigma range must be widened or your prior set is too far off. Weights being reset to simple equal values"

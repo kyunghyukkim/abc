@@ -94,10 +94,9 @@ def priorProb(Thet, means, sigmas):
         else:
             probProduct = probProduct * prob
 
+
+    #print "probProduct"
     #print probProduct
-
-
-
     return probProduct
 
 def normalizeConditional(x):
@@ -113,7 +112,8 @@ def normalizeConditional(x):
 # a theta distribution, the previous theta distribution,
 # a perturbation function, and a proposal distribuiton to
 # create a new weighting vector for particles.
-def weightt(N, prevWeights, pastWeights, newThet, prevThet, i, t):
+def weightt(N, prevWeights, pastWeights, newThet, prevThet, i, t, start, sigmas):
+    #print "My sins begin to weigh heavily"
     #newWeights = []
     #for i in range(len(newThet)):
     sum = 0
@@ -123,8 +123,9 @@ def weightt(N, prevWeights, pastWeights, newThet, prevThet, i, t):
         sum = sum + bit
     #print "sum", i
     #print sum
-    weight = priorProb(newThet[i], [0.4, 1, 200, 0.01], [1, 2, 400, 1])/sum
+    weight = priorProb(newThet[i], start, sigmas)/sum
     #numpy.append(newWeights, weight)
+    #print "The weight falls aside"
     return weight
 
 

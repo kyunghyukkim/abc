@@ -68,19 +68,19 @@ std::ofstream bitFile;
 char * gillespie(char *str)
 {
 
-   cout << "Gillespie Lives\n";
+   //cout << "Gillespie Lives\n";
    bitFile.open ("CtoPy.csv");
 	std::stringstream STR_OUTPUT;
 	
-   cout << "Model_def in\n";
+   //cout << "Model_def in\n";
    
 	model_def(str, STR_OUTPUT);
    
-   cout << "From model_def tp time_evol\n";
+   //cout << "From model_def tp time_evol\n";
    
 	time_evol(STR_OUTPUT);
    
-   cout << "time_evol escaped\n";
+   //cout << "time_evol escaped\n";
 	
 	const std::string& tmp = STR_OUTPUT.str();
 	STR_OUTPUT.str("");
@@ -171,12 +171,12 @@ void propensity(void)
 void time_evol(std::stringstream& STR_OUTPUT)
 {
 
-   cout << "time_evol intimate\n";
+   //cout << "time_evol intimate\n";
 	
 	init_genrand(time(NULL)+genrand_int32());
 	init_state();
 	
-   cout << "initialization complete\n";
+   //cout << "initialization complete\n";
 
 	//STR_OUTPUT << std::endl;	
 	//STR_OUTPUT << "Time" << " ";
@@ -185,7 +185,7 @@ void time_evol(std::stringstream& STR_OUTPUT)
 	//}
 	//STR_OUTPUT << std::endl;	
    
-   cout << "MC_not_finished in\n";
+   //cout << "MC_not_finished in\n";
 	while(INDEX_GRID < NGRID_BF_STEADY )  MC_not_finished(STR_OUTPUT);
 }
 
