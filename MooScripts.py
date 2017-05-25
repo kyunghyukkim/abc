@@ -149,6 +149,8 @@ def PerturbationKernel(particles, N):
     ThetaSet = particles.loc['theta']
     #print "rowCount"
     rowCount = ThetaSet.shape[0]
+    print "rowCount"
+    print rowCount
     colCount = ThetaSet.shape[1]
 
     means = []
@@ -167,13 +169,20 @@ def PerturbationKernel(particles, N):
     print ThetaSet
     Covar = numpy.cov(ThetaSet)
 
+
+    print "means"
+    print means
+    print "Covar"
+    print Covar
+    print N
+
     windex = 0
     results = pandas.DataFrame()
     #print "windex start"
     while windex < N:
 
-        meansl = [means[0], means[1]]
-        Covarl = [[Covar[0][0],Covar[0][1]],[Covar[1][0],Covar[1][1]]]
+        meansl = means.tolist() #[means[0], means[1]]
+        Covarl = Covar.tolist() #[[Covar[0][0],Covar[0][1]],[Covar[1][0],Covar[1][1]]]
 
         result = numpy.random.multivariate_normal(meansl, Covarl)
         results[windex] = result
@@ -273,7 +282,7 @@ def CumulativeDistribution(pThetp):
 # this function is to act over, the number of samples you would like, the type of evnelope you want to use
 # and the variance of the Normal distribution should you want it. It produces N number of samples that
 # are accepted into the pThetp function.
-def RejectionSampling(type = 'Box', var = 1, center = -666.666):
+def RejectionSampling(type = 'Box', var = 1, center = -123.456):
 
     range = [-20, 20]
 
@@ -288,7 +297,7 @@ def RejectionSampling(type = 'Box', var = 1, center = -666.666):
     def pThetp(x):
         return numpy.exp(-numpy.power(x + 3, 2.) / (2 * numpy.power(3, 2.)))
 
-    if (center == -666.666):
+    if (center == -123.456):
         center = numpy.mean(range)
 
     index = 1
